@@ -1,6 +1,6 @@
 import utils
 from utils import clean_data
-import requests
+# import requests
 from datetime import timedelta, date
 import time
 from bs4 import BeautifulSoup
