@@ -14,21 +14,51 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
+import numpy as np
 import constants
 from random import randint
 
 
-def clean_data(data):
+def clean_data_unit(data):
     data = data.strip()
-    encoded_string = data.encode("ascii", "ignore")
-    data = encoded_string.decode()
     data = data.replace('\r', '')
     data = data.replace('\n', '')
     data = re.sub(r'\s*', '', data)
     return data
 
 
-def date_range(start_date,end_date):
+def clean_html(raw_html):
+    # Removes problematic tags
+    html = re.sub(r'<.*center>', '', raw_html)
+    return html
+
+
+# Remove duplicates based on ID
+def remove_duplicates(checklist, newlist, id_index):
+    unique_list = []
+    columns = list(zip(*newlist))  # Transpose rows to columns
+    sample_id_list = list(columns[id_index]) # Gets only the id column
+    matches = set(checklist).intersection(sample_id_list)  # Compares for duplicate values
+    print("Num duplicates: " + str(len(matches)) + " Num analytes: " + str(len(newlist)))
+    for match in matches:
+        match_index = sample_id_list.index(match)  # Gets row number of duplicates
+        del newlist[match_index]
+        del sample_id_list[match_index]
+    print(checklist)
+    print(newlist)
+    print(str(len(matches)) + " duplicates removed.")
+    print(str(len(newlist)) + " items remaining.")
+    exit()
+    return newlist
+
+
+def ascii_encoding(data):
+    encoded_string = data.encode("ascii", "ignore")
+    data = encoded_string.decode()
+    return data
+
+
+def date_range(start_date, end_date):
     date_range_tup = []
     end_range = start_date + timedelta(days=constants.DATE_INCREMENT)
     while end_range <= end_date:
@@ -39,10 +69,12 @@ def date_range(start_date,end_date):
         end_range = start_date + timedelta(days=constants.DATE_INCREMENT)
     return date_range_tup
 
-def url_with_date(start_date, end_date):
-    api_call = constants.JSP_CALL.replace('STARTING_DATE', start_date)
+
+def url_with_date(start_date, end_date, url, api_endpoint):
+    api_call = api_endpoint.replace('STARTING_DATE', start_date)
     api_call = api_call.replace('ENDING_DATE', end_date)
-    return constants.ARIZONA_URL + api_call
+    return url + api_call
+
 
 def initial_driver():
     options = Options()
@@ -68,4 +100,3 @@ def initial_driver():
 
     driver.implicitly_wait(15)
     return driver
-
