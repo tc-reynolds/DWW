@@ -33,23 +33,33 @@ def clean_html(raw_html):
     return html
 
 
+def remove_coli_duplicates(checklist, scraped_list, id1, id2):
+    columns = list(zip(*scraped_list))  # Transpose rows to columns
+    sample_id_list = list(columns[id1])  # Gets only the id column
+    analyte_id_list = list(columns[id2])
+    zip_list = zip(sample_id_list, analyte_id_list)
+    combined_list = [i + j for i, j in zip_list]
+    unique_list = list_comparison(checklist, scraped_list, combined_list)
+    return unique_list
+
+
 # Remove duplicates based on ID
-def remove_duplicates(checklist, newlist, id_index):
-    unique_list = []
-    columns = list(zip(*newlist))  # Transpose rows to columns
-    sample_id_list = list(columns[id_index]) # Gets only the id column
+def remove_chem_duplicates(checklist, scraped_list, id_index):
+    columns = list(zip(*scraped_list))  # Transpose rows to columns
+    sample_id_list = list(columns[id_index])  # Gets only the id column
+    unique_list = list_comparison(checklist, scraped_list, sample_id_list)
+    return unique_list
+
+
+def list_comparison(checklist, scraped_list, sample_id_list):
     matches = set(checklist).intersection(sample_id_list)  # Compares for duplicate values
-    print("Num duplicates: " + str(len(matches)) + " Num analytes: " + str(len(newlist)))
     for match in matches:
         match_index = sample_id_list.index(match)  # Gets row number of duplicates
-        del newlist[match_index]
+        del scraped_list[match_index]
         del sample_id_list[match_index]
-    print(checklist)
-    print(newlist)
-    print(str(len(matches)) + " duplicates removed.")
-    print(str(len(newlist)) + " items remaining.")
-    exit()
-    return newlist
+    print(str(len(matches)) + " duplicates removed | " + str(len(scraped_list)) + " unique data points")
+
+    return scraped_list
 
 
 def ascii_encoding(data):

@@ -1,5 +1,5 @@
 import utils
-from utils import clean_data_unit, ascii_encoding, clean_html, remove_duplicates
+from utils import clean_data_unit, ascii_encoding, clean_html, remove_coli_duplicates, remove_chem_duplicates
 # import requests
 from datetime import timedelta, date
 import time
@@ -22,16 +22,14 @@ from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 import constants
 
-date_ranges = utils.date_range(date(1999, 7, 3), date(2020, 12, 30))
+
+date_ranges = utils.date_range(date(2016, 3, 5), date(2020, 12, 30))
 id_list = []
-api_endpoint = ''
 expected_headers = []
-save_location = ''
 driver = utils.initial_driver()
-chem_scrape = False
 
 
-def get_html_curl(start, end):
+def get_html_curl(start, end, api_endpoint):
     # Scrapes HTML, here you put the selenium crawling:
     url = utils.url_with_date(start, end, constants.ARIZONA_URL, api_endpoint)
     print("Scraping dates: " + start + " to " + end)
@@ -68,16 +66,17 @@ def get_rows(html):
     return rows
 
 
-def clean_headers(headers, default_headers):
+def clean_headers(headers, chem_scrape):
     # provide header list
-    headers = [clean_data_unit(ele.text) for ele in headers if clean_data_unit(ele.text) in default_headers]
+    headers = [clean_data_unit(ele.text) for ele in headers if clean_data_unit(ele.text) in expected_headers]
     if chem_scrape:
         headers.append("SampleHref")
     # headers.sort()
     print(headers)
     return headers
 
-def build_row(cols):
+
+def build_row(cols, chem_scrape):
     clean_row = []
     href = ''
     for ele in cols:
@@ -92,27 +91,32 @@ def build_row(cols):
         clean_row.append(href)
     return clean_row
 
+
 def clean_analytes(rows):
     print("Cleaning data...")
     analytes = []
     for row in tqdm(rows):
         cols = row.find_all('td')
-        clean_row = build_row(cols)
+        clean_row = build_row(cols, chem_scrape)
         analytes.append(clean_row)
     return analytes
 
 
-def build_analyte_df(data_rows, expected_headers):
+def build_analyte_df(data_rows, chem_scrape):
     print("Building dataframe...")
     header_row = data_rows.pop(0)
     headers = header_row.find_all('td')
-    headers = clean_headers(headers, expected_headers)
+    headers = clean_headers(headers, chem_scrape)
     print("Headers received.")
     analytes = clean_analytes(data_rows)
-    analytes = remove_duplicates(id_list, analytes, headers.index(constants.ID))
+    if chem_scrape:
+        id1 = headers.index(constants.LAB_SAMPLE)
+        analytes = remove_chem_duplicates(id_list, analytes, id1)
+    else:
+        id1 = headers.index(constants.LAB_SAMPLE)
+        id2 = headers.index(constants.ANALYTE_CODE)
+        analytes = remove_coli_duplicates(id_list, analytes, id1, id2)
     print("Num unique samples: " + str(len(analytes)))
-    print(analytes[0])
-    print(analytes[1])
     analyte_df = pd.DataFrame(analytes)
     if analyte_df.empty is False:
         analyte_df.columns = headers
@@ -126,17 +130,26 @@ def read_historical(columns, save_location):
     db = pd.read_csv(save_location)
     if db.empty is False:
         db.columns = columns
-        id_list = list(db[constants.ID])
+        print(chem_scrape)
+        if chem_scrape:
+            id_list = db[constants.LAB_SAMPLE]
+        else:
+            lab_sample = db[constants.LAB_SAMPLE]
+            analyte_code = db[constants.ANALYTE_CODE]
+            id_list = [str(i) + str(j) for i, j in zip(lab_sample, analyte_code)]
         print("Num Duplicates to check: " + str(len(id_list)))
     return id_list
 
 
-def main():
+def main(chem_scrape, api_endpoint, save_location):
     for start, end in date_ranges:
+        # Uncomment below code to switch from curl to selenium for web scraping
+        # if driver.session_id is None:
         # driver.start_client()
-        html = get_html_curl(start, end)
+        # html = get_html_selenium(start, end)
+        html = get_html_curl(start, end, api_endpoint)
         data_rows = get_rows(html)
-        analyte_df = build_analyte_df(data_rows, expected_headers)
+        analyte_df = build_analyte_df(data_rows, chem_scrape)
         if analyte_df.empty is False:
             analyte_df.to_csv(save_location, mode='a', header=False)
         else:
@@ -145,25 +158,34 @@ def main():
         # driver.close()
         time.sleep(1)
 
-if len(sys.argv) == 1:
-    print("Call program passed with argument of either CHEM or COLI ")
-    print("EXAMPLE: python3 arizona_scraper.py CHEM")
-    exit()
-if "COLI" in sys.argv[1]:
-    # Read in existing data for duplicate check
-    save_location = constants.COLI_SAVE_LOCATION
-    id_list = read_historical(constants.CSV_COLIFORM, save_location)
-    api_endpoint = constants.COLIFORM_CALL
-    expected_headers = constants.COLIFORM_HEADERS
-    main()
-elif "CHEM" in sys.argv[1]:
-    save_location = constants.CHEM_SAVE_LOCATION
-    id_list = read_historical(constants.CSV_CHEM, save_location)
-    chem_scrape = True
-    api_endpoint = constants.CHEM_CALL
-    expected_headers = constants.CHEM_HEADERS
-    main()
-else:
-    print("Call program passed with argument of either CHEM or COLI ")
-    print("EXAMPLE: python3 arizona_scraper.py CHEM")
-    exit()
+
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        print("Call program passed with argument of either CHEM or COLI ")
+        print("EXAMPLE: python3 arizona_scraper.py CHEM")
+        exit()
+    if "COLI" in sys.argv[1]:
+        print("COLI SCRAPE")
+        chem_scrape = False
+        # Read in existing data for duplicate check
+        save_location = constants.COLI_SAVE_LOCATION
+        api_endpoint = constants.COLIFORM_CALL
+        expected_headers = constants.COLIFORM_HEADERS
+        csv_headers = constants.CSV_COLIFORM
+
+        id_list = read_historical(csv_headers, save_location)
+        main(chem_scrape, api_endpoint, save_location)
+    elif "CHEM" in sys.argv[1]:
+        print("CHEM SCRAPE")
+        save_location = constants.CHEM_SAVE_LOCATION
+        chem_scrape = True
+        api_endpoint = constants.CHEM_CALL
+        expected_headers = constants.CHEM_HEADERS
+        csv_headers = constants.CSV_CHEM
+
+        # id_list = read_historical(csv_headers, save_location)
+        main(chem_scrape, api_endpoint, save_location)
+    else:
+        print("Call program passed with argument of either CHEM or COLI ")
+        print("EXAMPLE: python3 arizona_scraper.py CHEM")
+        exit()

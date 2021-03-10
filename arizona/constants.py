@@ -27,5 +27,5 @@ CSV_CHEM = ['UID', 'PrincipalCountyServed', 'WaterSystemNo.',
                 'Type', 'CollectionDate&Time',
                 'SamplingPoint', 'SampleHref']
 
-ID = 'LabSampleNo.'
-COLI_CODE = 'AnalyteCode'
+LAB_SAMPLE = 'LabSampleNo.'
+ANALYTE_CODE = 'AnalyteCode'

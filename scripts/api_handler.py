@@ -50,7 +50,18 @@ jsp_states = {
 	'New Mexico' : 'https://dww.water.net.env.nm.gov/DWW/JSP/',
 	'South Carolina' : 'http://dwwwebvm.dhec.sc.gov:8080/DWW/JSP/'
 	}
-
+crawled_states = [
+	'Arizona',
+	'Delaware',
+	'Iowa',
+	'Kentucky',
+	'Louisiana',
+	'Mississippi',
+	'North Carolina',
+	'Vermont',
+	'Florida',
+	'West Virginia'
+]
 jsp_call = 'SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All&SourceWaterType=All&SampleType=ColiformSample&begin_date=10%2F28%2F2020&end_date=2%2F28%2F2021&action1=Search+For+Samples'
 
 def known_states():
@@ -64,6 +75,13 @@ def known_states():
 	for item in no_data:
 		known_state_list.append(item)
 	return known_state_list
+
+def crawl_new():
+	print("States left to Crawl!")
+	keys = jsp_states.keys()
+	for key in keys:
+		if key not in crawled_states:
+			print(key)
 def diff(li1, li2):
     return (list(list(set(li1)-set(li2)) + list(set(li2)-set(li1))))
 
@@ -74,3 +92,4 @@ print("REMAINING STATES")
 print(states_left)
 print("Number of States: " + str(len(states_left)))
 print("Num Standard JSP States: " + str(len(jsp_states.keys())))
+crawl_new()
