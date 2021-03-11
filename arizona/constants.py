@@ -1,8 +1,8 @@
-ARIZONA_URL = 'http://water.epa.state.il.us/dww/'
+URL = 'http://water.epa.state.il.us/dww/'
 COLIFORM_CALL = 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All&SourceWaterType=All&SampleType=ColiformSample&begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
 CHEM_CALL = 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All&SourceWaterType=All&SampleType=NonTCRAll&begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
-COLI_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/data/Coliform1.csv'
-CHEM_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/data/Chem_ill.csv'
+COLI_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/data/Coliform'
+CHEM_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/data/Chem'
 
 DATE_INCREMENT = 15  # Days
 
