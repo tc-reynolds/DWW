@@ -38,7 +38,7 @@ class Web_Scraper:
 
     def get_html_curl(self, start, end):
         # Scrapes HTML, here you put the selenium crawling:
-        url = utils.url_with_date(start, end, constants.URL, self.api_endpoint)
+        url = utils.url_with_date(start, end, self.url, self.api_endpoint)
         print("Scraping dates: " + start + " to " + end)
         print("URL: " + url)
         result = subprocess.run(['curl', '-s', url], stdout=subprocess.PIPE)
@@ -54,7 +54,7 @@ class Web_Scraper:
         return html
 
     def get_html_selenium(self, start, end, api_endpoint):
-        url = utils.url_with_date(start, end, constants.URL, api_endpoint)
+        url = utils.url_with_date(start, end, self.url, api_endpoint)
         driver.get(url)
         print("Scraping dates: " + start + " to " + end)
         print("URL: " + url)
@@ -86,7 +86,7 @@ class Web_Scraper:
             data = clean_data_unit(ele.text)
             if self.chem_scrape:
                 if ele.a is not None:
-                    href = constants.URL + "JSP/" + ele.a['href']
+                    href = self.url + "JSP/" + ele.a['href']
                     href = href.replace(' ', '')
             if data:
                 clean_row.append(data)
@@ -120,7 +120,8 @@ class Web_Scraper:
         headers = self.clean_headers(headers)
         print("Headers received.")
         analytes = self.clean_analytes(data_rows)
-        analytes = self.parse_duplicate_analytes(headers, analytes)
+        if len(self.id_list) > 0:
+            analytes = self.parse_duplicate_analytes(headers, analytes)
         print("Num unique samples: " + str(len(analytes)))
         analyte_df = pd.DataFrame(analytes)
         if analyte_df.empty is False:
@@ -170,7 +171,7 @@ class Web_Scraper:
             if analyte_df.empty is False:
                 analyte_df.to_csv(self.save_location, mode='a', header=False)
             else:
-                print("Data already exists, skipping...")
+                print("No unique data found...")
             print("Sleeping 1 seconds...")
             # driver.close()
             time.sleep(1)

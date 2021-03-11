@@ -6,10 +6,12 @@ import utils
 from datetime import date
 
 if __name__ == '__main__':
-    date_ranges = utils.date_range(date(2016, 3, 5), date(2020, 12, 30))
-    state = 'Arizona'
+    date_ranges = utils.date_range(date(1999, 3, 5), date(2020, 12, 30))
+    state = 'Tennessee'
     filetype = '.csv'
     url = api_handler.get_url(state)
+    print(state)
+    print(url)
     if len(sys.argv) == 1:
         print("Call program passed with argument of either CHEM or COLI ")
         print("EXAMPLE: python3 ArizonaScraper.py CHEM")
@@ -19,7 +21,7 @@ if __name__ == '__main__':
         chem_scrape = False
         # Read in existing data for duplicate check
         save_location = constants.COLI_SAVE_LOCATION + state + filetype
-        api_endpoint = constants.COLIFORM_CALL
+        api_endpoint = api_handler.get_coli_call(state)
         expected_headers = constants.COLIFORM_HEADERS
         csv_headers = constants.CSV_COLIFORM
         web_scraper = Web_Scraper(url, expected_headers, csv_headers,
@@ -29,7 +31,7 @@ if __name__ == '__main__':
         print("CHEM SCRAPE")
         save_location = constants.CHEM_SAVE_LOCATION + state + filetype
         chem_scrape = True
-        api_endpoint = constants.CHEM_CALL
+        api_endpoint = api_handler.get_chem_call(state)
         expected_headers = constants.CHEM_HEADERS
         csv_headers = constants.CSV_CHEM
         web_scraper = Web_Scraper(url, expected_headers, csv_headers,
