@@ -4,42 +4,65 @@ import constants
 import api_handler
 import utils
 from datetime import date
+import threading
+from threading import Thread, ThreadError
+
+date_ranges = utils.date_range(date(1999, 3, 5), date(2020, 12, 30))
+filetype = '.csv'
+
+
+def scrape_copper_lead(state, url):
+    pass
+
+
+def scrape_chem(state, url):
+    print("CHEM SCRAPE")
+    save_location = constants.CHEM_SAVE_LOCATION + state + filetype
+    log_location = constants.CHEM_LOG_LOCATION + state + '.log'
+    chem_scrape = True
+    api_endpoint = api_handler.get_chem_call(state)
+    expected_headers = constants.CHEM_HEADERS
+    csv_headers = constants.CSV_CHEM
+    web_scraper = Web_Scraper(url, expected_headers, csv_headers,
+                              chem_scrape, save_location, log_location,
+                              date_ranges, api_endpoint)
+    web_scraper.scrape()
+
+
+def scrape_coli(state, url):
+    print("COLI SCRAPE")
+    chem_scrape = False
+    # Read in existing data for duplicate check
+    save_location = constants.COLI_SAVE_LOCATION + state + filetype
+    log_location = constants.COLI_LOG_LOCATION + state + '.log'
+
+    api_endpoint = api_handler.get_coli_call(state)
+    expected_headers = constants.COLIFORM_HEADERS
+    csv_headers = constants.CSV_COLIFORM
+    web_scraper = Web_Scraper(url, expected_headers, csv_headers,
+                              chem_scrape, save_location, log_location,
+                              date_ranges, api_endpoint)
+    web_scraper.scrape()
+
+def scrape_state(state, state_dict, url):
+    if state_dict[api_handler.coli] is not None:
+        scrape_coli(state, url)
+    if state_dict[api_handler.chem] is not None:
+        scrape_chem(state, url)
+    if state_dict[api_handler.copper_lead] is not None:
+        scrape_copper_lead(state, url)
+
 
 if __name__ == '__main__':
-    date_ranges = utils.date_range(date(1999, 3, 5), date(2020, 12, 30))
-    state = 'Tennessee'
-    filetype = '.csv'
-    url = api_handler.get_url(state)
-    print(state)
-    print(url)
-    if len(sys.argv) == 1:
-        print("Call program passed with argument of either CHEM or COLI ")
-        print("EXAMPLE: python3 ArizonaScraper.py CHEM")
-        exit()
-    if "COLI" in sys.argv[1]:
-        print("COLI SCRAPE")
-        chem_scrape = False
-        # Read in existing data for duplicate check
-        save_location = constants.COLI_SAVE_LOCATION + state + filetype
-        api_endpoint = api_handler.get_coli_call(state)
-        expected_headers = constants.COLIFORM_HEADERS
-        csv_headers = constants.CSV_COLIFORM
-        web_scraper = Web_Scraper(url, expected_headers, csv_headers,
-                                  chem_scrape, save_location, date_ranges, api_endpoint)
-        web_scraper.scrape()
-    elif "CHEM" in sys.argv[1]:
-        print("CHEM SCRAPE")
-        save_location = constants.CHEM_SAVE_LOCATION + state + filetype
-        chem_scrape = True
-        api_endpoint = api_handler.get_chem_call(state)
-        expected_headers = constants.CHEM_HEADERS
-        csv_headers = constants.CSV_CHEM
-        web_scraper = Web_Scraper(url, expected_headers, csv_headers,
-                                  chem_scrape, save_location, date_ranges, api_endpoint)
-        web_scraper.scrape()
-    elif "LEAD_COPPER":
-        pass
-    else:
-        print("Execute program with argument of either CHEM, COLI, or LEAD_COPPER ")
-        print("EXAMPLE: python3 ArizonaScraper.py CHEM")
-        exit()
+    states = api_handler.jsp_states
+    for state in states:
+        url = api_handler.get_url(state)
+        # scrape_state(state, states[state], url)
+        try:
+            scraper_thread = Thread(target=scrape_state, args=(state, states[state], url,))
+            scraper_thread.start()
+        except ThreadError as te:
+            print(te.with_traceback())
+        while threading.active_count() > 10:
+            pass
+        print(state)

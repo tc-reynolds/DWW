@@ -1,5 +1,11 @@
-COLI_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/data/Coliform'
-CHEM_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/data/Chem'
+COLI_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/data/Coliform_'
+CHEM_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/data/Chem_'
+
+COLI_LOG_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/log/Coliform_'
+CHEM_LOG_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/log/Chem_'
+
+COPPER_LEAD_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/data/Copper_Lead_'
+
 
 DATE_INCREMENT = 30  # Days
 

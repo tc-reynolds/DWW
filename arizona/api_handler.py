@@ -1,6 +1,7 @@
 url = 'url'
 coli = 'coliform'
 chem = 'chem'
+copper_lead = 'copper_lead'
 
 state_names = ["Alaska", "Alabama", "Arkansas", "Arizona", "California", "Colorado", "Connecticut",
                "District of Columbia", "Delaware", "Florida", "Georgia", "Hawaii", "Iowa", "Idaho", "Illinois",
@@ -45,7 +46,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All'
               '&SourceWaterType=All&PointOfContactType=None&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Iowa': {
         url: 'http://programs.iowadnr.gov/drinkingwaterwatch/',
@@ -54,7 +56,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All'
               '&SourceWaterType=All&PointOfContactType=None&SampleType=NonTCRAll'
-              '&begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              '&begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Illinois': {
         url: 'http://water.epa.state.il.us/dww/',
@@ -63,7 +66,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Kentucky': {
         url: 'https://dep.gateway.ky.gov/DWW/',
@@ -72,7 +76,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Louisiana': {
         url: 'https://sdw.ldh.la.gov/DWW/',
@@ -81,7 +86,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Mississippi': {
         url: 'https://apps.msdh.ms.gov/DWW/',
@@ -90,16 +96,18 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'North Carolina': {
         url: 'https://www.pwss.enr.state.nc.us/NCDWW/',
         coli: 'JSP/SearchDispatch?number=&name=&companyname=&WaterSystemStatusCode=A&county=All'
               '&WaterSystemType=All&SourceWaterType=All&PointOfContactType=None&SampleType=ColiformSample&'
-              'begin_date=03/05/2016&end_date=03/20/2016&action1=Search+For+Samples',
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'SearchDispatch?number=&name=&companyname=&WaterSystemStatusCode=A&county=All&WaterSystemType=All'
               '&SourceWaterType=All&PointOfContactType=None&SampleType=NonTCRAll&stateclassificationcode=All&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Vermont': {
         url: 'https://anrnode.anr.state.vt.us/DWW/',
@@ -108,7 +116,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'West Virginia': {
         url: 'https://dww.wvdhhr.org/DWWpublic/',
@@ -117,7 +126,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Montana': {
         url: 'http://sdwisdww.mt.gov:8080/DWW/',
@@ -126,7 +136,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Tennessee': {
         url: 'http://environment-online.state.tn.us:8080/DWW/',
@@ -135,14 +146,16 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
               '&PointOfContactType=None&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Indiana': {
         url: 'https://myweb.in.gov/IDEM/DWW/',
         coli: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
               '&PointOfContactType=None&SampleType=ColiformSample&'
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
-        chem: None
+        chem: None,
+        copper_lead: None
     },
     'Oklahoma': {
         url: 'http://sdwis.deq.state.ok.us/DWW/',
@@ -151,7 +164,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Arizona': {
         url: 'https://azsdwis.azdeq.gov/DWW_EXT/',
@@ -160,7 +174,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     # 'Arkansas': {
     #     url: 'http://sdwis.deq.state.ok.us/DWW/',
@@ -178,7 +193,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Idaho': {
         url: 'http://dww.deq.idaho.gov/IDPDWW/',
@@ -187,7 +203,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Nebraska': {
         url: 'https://sdwis-dhhs.ne.gov:8443/DWW/',
@@ -196,7 +213,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'Nevada': {
         url: 'https://ndwis.ndep.nv.gov/DWW/',
@@ -205,7 +223,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
               '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'New Mexico': {
         url: 'https://dww.water.net.env.nm.gov/DWW/',
@@ -214,7 +233,8 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
               '&PointOfContactType=None&SampleType=NonTCRAll&stateclassificationcode=All&'
-              'begin_date=3%2F11%2F2019&end_date=3%2F11%2F2021&action1=Search+For+Samples'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: None
     },
     'South Carolina': {
         url: 'http://dwwwebvm.dhec.sc.gov:8080/DWW/',
@@ -223,7 +243,10 @@ jsp_states = {
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
               '&PointOfContactType=None&SampleType=NonTCRAll&stateclassificationcode=All&'
-              'begin_date=3%2F11%2F2019&end_date=3%2F11%2F2021&action1=Search+For+Samples'
+              'begin_date=3%2F11%2F2019&end_date=3%2F11%2F2021&action1=Search+For+Samples',
+        copper_lead: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+                     '&PointOfContactType=None&SampleType=LeadandCopperSummaries'
+                     '&begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
     }
 }
 crawled_states = [

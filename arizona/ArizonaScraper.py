@@ -8,6 +8,7 @@ import subprocess
 from statistics import median
 import re
 from tqdm import tqdm
+import logging
 import sys
 
 import numpy as np
@@ -24,9 +25,8 @@ import constants
 
 
 class Web_Scraper:
-    driver = utils.initial_driver()
-
-    def __init__(self, url, expected_headers, csv_headers, chem_scrape, save_location, date_ranges, api_endpoint):
+    # driver = utils.initial_driver()
+    def __init__(self, url, expected_headers, csv_headers, chem_scrape, save_location, logging_location, date_ranges, api_endpoint):
         self.url = url
         self.expected_headers = expected_headers
         self.csv_headers = csv_headers
@@ -97,7 +97,7 @@ class Web_Scraper:
     def clean_analytes(self, rows):
         print("Cleaning data...")
         analytes = []
-        for row in tqdm(rows):
+        for row in rows:
             cols = row.find_all('td')
             clean_row = self.build_row(cols)
             analytes.append(clean_row)
