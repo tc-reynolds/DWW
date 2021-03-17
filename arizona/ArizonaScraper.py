@@ -1,15 +1,8 @@
 import utils
 from utils import clean_data_unit, ascii_encoding, clean_html, remove_coli_duplicates, remove_chem_duplicates
-# import requests
-from datetime import timedelta, date
 import time
 from bs4 import BeautifulSoup
 import subprocess
-from statistics import median
-import re
-from tqdm import tqdm
-import logging
-import sys
 
 import numpy as np
 
