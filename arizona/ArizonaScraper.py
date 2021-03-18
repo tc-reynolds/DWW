@@ -113,7 +113,7 @@ class Web_Scraper:
         headers = self.clean_headers(headers)
         print("Headers received.")
         analytes = self.clean_analytes(data_rows)
-        if len(self.id_list) > 0:
+        if len(self.id_list) > 0 and len(analytes) > 0:
             analytes = self.parse_duplicate_analytes(headers, analytes)
         print("Num unique samples: " + str(len(analytes)))
         analyte_df = pd.DataFrame(analytes)

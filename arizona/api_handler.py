@@ -47,7 +47,9 @@ jsp_states = {
         chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All'
               '&SourceWaterType=All&PointOfContactType=None&SampleType=NonTCRAll&'
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
-        copper_lead: None
+        copper_lead: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+                     '&PointOfContactType=None&SampleType=LeadandCopperSummaries&'
+                     'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
     },
     'Iowa': {
         url: 'http://programs.iowadnr.gov/drinkingwaterwatch/',
@@ -295,6 +297,9 @@ def get_coli_call(key):
 
 def get_chem_call(key):
     return jsp_states[key][chem]
+
+def get_copper_lead_call(key):
+    return jsp_states[key][copper_lead]
 
 
 def diff(li1, li2):
