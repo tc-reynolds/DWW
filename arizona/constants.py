@@ -5,6 +5,7 @@ COPPER_LEAD_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/data/Copper_Lead_'
 COLI_LOG_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/log/Coliform_'
 CHEM_LOG_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/log/Chem_'
 COPPER_LEAD_LOG_LOCATION = '/mnt/c/Water-Scraper/DWW/arizona/log/Copper_Lead_'
+RUN_SCRAPER_LOG = '/mnt/c/Water-Scraper/DWW/arizona/log/master_log.log'
 
 
 DATE_INCREMENT = 30  # Days

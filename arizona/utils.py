@@ -35,6 +35,8 @@ def clean_html(raw_html):
 
 def remove_coli_duplicates(checklist, scraped_list, id1, id2):
     columns = list(zip(*scraped_list))  # Transpose rows to columns
+    # print(scraped_list)
+    # print(len(columns))
     sample_id_list = list(columns[id1])  # Gets only the id column
     analyte_id_list = list(columns[id2])
     zip_list = zip(sample_id_list, analyte_id_list)
@@ -57,7 +59,7 @@ def list_comparison(checklist, scraped_list, sample_id_list):
         match_index = sample_id_list.index(match)  # Gets row number of duplicates
         del scraped_list[match_index]
         del sample_id_list[match_index]
-    print(str(len(matches)) + " duplicates removed | " + str(len(scraped_list)) + " unique data points")
+    # print(str(len(matches)) + " duplicates removed | " + str(len(scraped_list)) + " unique data points")
 
     return scraped_list
 
