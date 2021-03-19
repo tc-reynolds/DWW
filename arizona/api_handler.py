@@ -59,7 +59,9 @@ jsp_states = {
         chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All'
               '&SourceWaterType=All&PointOfContactType=None&SampleType=NonTCRAll'
               '&begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
-        copper_lead: None
+        copper_lead: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+                     '&PointOfContactType=None&SampleType=LeadandCopperSummaries&'
+                     'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
     },
     'Illinois': {
         url: 'http://water.epa.state.il.us/dww/',
@@ -149,7 +151,9 @@ jsp_states = {
         chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
               '&PointOfContactType=None&SampleType=NonTCRAll&'
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
-        copper_lead: None
+        copper_lead: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+                     '&PointOfContactType=None&SampleType=LeadandCopperSummaries&'
+                     'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
     },
     'Indiana': {
         url: 'https://myweb.in.gov/IDEM/DWW/',
@@ -157,7 +161,9 @@ jsp_states = {
               '&PointOfContactType=None&SampleType=ColiformSample&'
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: None,
-        copper_lead: None
+        copper_lead: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+                     '&PointOfContactType=None&SampleType=LeadandCopperSummaries&'
+                     'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
     },
     'Oklahoma': {
         url: 'http://sdwis.deq.state.ok.us/DWW/',
@@ -236,7 +242,9 @@ jsp_states = {
         chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
               '&PointOfContactType=None&SampleType=NonTCRAll&stateclassificationcode=All&'
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
-        copper_lead: None
+        copper_lead: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+                     '&PointOfContactType=None&SampleType=LeadandCopperSummaries&'
+                     'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
     },
     'South Carolina': {
         url: 'http://dwwwebvm.dhec.sc.gov:8080/DWW/',

@@ -14,16 +14,17 @@ filetype = '.csv'
 
 def scrape_copper_lead(state, url):
     master_logger.info("COPPER/LEAD SCRAPE %s", state)
-    chem_scrape = False
+    chem_scrape = 'COPPER_LEAD'
     # Read in existing data for duplicate check
     save_location = constants.COPPER_LEAD_SAVE_LOCATION + state + filetype
     log_location = constants.COPPER_LEAD_LOG_LOCATION + state + '.log'
+    logger = build_logger(state, log_location, 'copper_lead')
 
     api_endpoint = api_handler.get_copper_lead_call(state)
     expected_headers = constants.COPPER_LEAD_HEADERS
     csv_headers = constants.CSV_COPPER_LEAD
     web_scraper = Web_Scraper(url, expected_headers, csv_headers,
-                              chem_scrape, save_location, log_location,
+                              chem_scrape, save_location, logger,
                               date_ranges, api_endpoint)
     web_scraper.scrape()
 
@@ -32,19 +33,20 @@ def scrape_chem(state, url):
     master_logger.info("CHEM SCRAPE %s", state)
     save_location = constants.CHEM_SAVE_LOCATION + state + filetype
     log_location = constants.CHEM_LOG_LOCATION + state + '.log'
-    chem_scrape = True
+    logger = build_logger(state, log_location, 'chem')
+    chem_scrape = 'CHEM'
     api_endpoint = api_handler.get_chem_call(state)
     expected_headers = constants.CHEM_HEADERS
     csv_headers = constants.CSV_CHEM
     web_scraper = Web_Scraper(url, expected_headers, csv_headers,
-                              chem_scrape, save_location, log_location,
+                              chem_scrape, save_location, logger,
                               date_ranges, api_endpoint)
     web_scraper.scrape()
 
 
 def scrape_coli(state, url):
     master_logger.info("COLI SCRAPE %s", state)
-    chem_scrape = False
+    chem_scrape = 'COLI'
     # Read in existing data for duplicate check
     save_location = constants.COLI_SAVE_LOCATION + state + filetype
     log_location = constants.COLI_LOG_LOCATION + state + '.log'
@@ -60,10 +62,10 @@ def scrape_coli(state, url):
 
 
 def scrape_state(state, state_dict, url):
-    if state_dict[api_handler.coli] is not None:
-        scrape_coli(state, url)
-    if state_dict[api_handler.chem] is not None:
-        scrape_chem(state, url)
+    # if state_dict[api_handler.coli] is not None:
+    #     scrape_coli(state, url)
+    # if state_dict[api_handler.chem] is not None:
+    #     scrape_chem(state, url)
     if state_dict[api_handler.copper_lead] is not None:
         scrape_copper_lead(state, url)
 
@@ -104,5 +106,5 @@ def single_state(states, state):
 master_logger = build_master_logger()
 if __name__ == '__main__':
     states = api_handler.jsp_states
-    # single_state(states, 'Vermont')
+    # single_state(states, 'Iowa')
     start_threading(states)

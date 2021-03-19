@@ -1,5 +1,5 @@
 import utils
-from utils import clean_data_unit, ascii_encoding, clean_html, remove_coli_duplicates, remove_chem_duplicates
+from utils import clean_data_unit, ascii_encoding, clean_html, remove_duplicates_two_ids, remove_duplicates_one_id
 import time
 from bs4 import BeautifulSoup
 import subprocess
@@ -33,7 +33,7 @@ class Web_Scraper:
 
     def get_html_requests(self, start, end):
         url = utils.url_with_date(start, end, self.url, self.api_endpoint)
-        # print(url)
+        self.logger.info("URL: " + url)
         try:
             result = requests.get(url)
             status_code = result.status_code
@@ -91,7 +91,7 @@ class Web_Scraper:
     def clean_headers(self, headers):
         # provide header list
         headers = [clean_data_unit(ele.text) for ele in headers if clean_data_unit(ele.text) in self.expected_headers]
-        if self.chem_scrape:
+        if self.chem_scrape == 'CHEM':
             headers.append("SampleHref")
         # headers.sort()
         self.logger.info(headers)
@@ -102,7 +102,7 @@ class Web_Scraper:
         href = ''
         for i, ele in enumerate(cols):
             data = clean_data_unit(ele.text)
-            if self.chem_scrape:
+            if self.chem_scrape == 'CHEM':
                 if ele.a is not None:
                     href = self.url + "JSP/" + ele.a['href']
                     href = href.replace(' ', '')
@@ -110,7 +110,7 @@ class Web_Scraper:
                 if data == '':
                     data = 'NULL'
                 clean_row.append(data)
-        if self.chem_scrape:
+        if self.chem_scrape == 'CHEM':
             clean_row.append(href)
         return clean_row
 
@@ -124,13 +124,17 @@ class Web_Scraper:
         return analytes
 
     def parse_duplicate_analytes(self, headers, analytes):
-        if self.chem_scrape:
+        if self.chem_scrape == 'CHEM':
             id1 = headers.index(constants.LAB_SAMPLE)
-            analytes = remove_chem_duplicates(self.id_list, analytes, id1)
-        else:
+            analytes = remove_duplicates_one_id(self.id_list, analytes, id1)
+        elif self.chem_scrape == 'COPPER_LEAD':
+            id1 = headers.index(constants.WATER_SYSTEMS_NO)
+            id2 = headers.index(constants.ANALYTE)
+            analytes = remove_duplicates_two_ids(self.id_list, analytes, id1, id2)
+        elif self.chem_scrape == 'COLI':
             id1 = headers.index(constants.LAB_SAMPLE)
             id2 = headers.index(constants.ANALYTE_CODE)
-            analytes = remove_coli_duplicates(self.id_list, analytes, id1, id2)
+            analytes = remove_duplicates_two_ids(self.id_list, analytes, id1, id2)
         return analytes
 
     def build_analyte_df(self, data_rows):
@@ -170,10 +174,13 @@ class Web_Scraper:
         if db is not None:
             if db.empty is False:
                 db.columns = self.csv_headers
-                self.logger.info(self.chem_scrape)
-                if self.chem_scrape:
+                if self.chem_scrape == 'CHEM':
                     id_list = db[constants.LAB_SAMPLE]
-                else:
+                elif self.chem_scrape == 'COPPER_LEAD':
+                    water_system_no = db[constants.WATER_SYSTEMS_NO]
+                    analyte_name = db[constants.ANALYTE]
+                    id_list = [str(i) + str(j) for i, j in zip(water_system_no, analyte_name)]
+                elif self.chem_scrape == 'COLI':
                     lab_sample = db[constants.LAB_SAMPLE]
                     analyte_code = db[constants.ANALYTE_CODE]
                     id_list = [str(i) + str(j) for i, j in zip(lab_sample, analyte_code)]
@@ -199,3 +206,4 @@ class Web_Scraper:
             self.logger.info("Sleeping 1 seconds...")
             # driver.close()
             time.sleep(1)
+        self.logger.info("Scraping finished....")

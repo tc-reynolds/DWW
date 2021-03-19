@@ -33,7 +33,7 @@ def clean_html(raw_html):
     return html
 
 
-def remove_coli_duplicates(checklist, scraped_list, id1, id2):
+def remove_duplicates_two_ids(checklist, scraped_list, id1, id2):
     columns = list(zip(*scraped_list))  # Transpose rows to columns
     # print(scraped_list)
     # print(len(columns))
@@ -46,7 +46,7 @@ def remove_coli_duplicates(checklist, scraped_list, id1, id2):
 
 
 # Remove duplicates based on ID
-def remove_chem_duplicates(checklist, scraped_list, id_index):
+def remove_duplicates_one_id(checklist, scraped_list, id_index):
     columns = list(zip(*scraped_list))  # Transpose rows to columns
     sample_id_list = list(columns[id_index])  # Gets only the id column
     unique_list = list_comparison(checklist, scraped_list, sample_id_list)
