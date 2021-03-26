@@ -1,5 +1,8 @@
 # DWW
 ### A Web Scraping program to gather data across all 50 States
+## Install Location
+Clone to C: drive
+
 ## How to run
 python3 run_scrapers.py 
 
