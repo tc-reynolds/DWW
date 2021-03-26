@@ -1,21 +1,21 @@
 # DWW
-###A Web Scraping program to gather data across all 50 States
-##How to run
+### A Web Scraping program to gather data across all 50 States
+## How to run
 python3 run_scrapers.py
 Logging is tracked under;
   - ./log/chem/ or ./log/coli/ or ./log/copper_lead/
   - Any crashing errors will get printed to the console. 
 Data is tracked under;
   - ./data/chem/ or ./data/coli/ or ./log/copper_lead/
-##DWW Scripts and information
-###runscrapers.py
+## DWW Scripts and information
+### runscrapers.py
 This file handles logging and building web scrapers for each state. 
 It can be run in either single state mode or multi-threaded statemode by flipping the commented state of the *single_state* function call
 or the *start_threading* function call in the __main__ function
-###JSPScraper.py
+### JSPScraper.py
 This file handles all standardized DWW websites. Many of the websites follow the exact same format with only slightly different api-endpoints
 This file is essentially a web scraping object class, with a constructor that is built by the *runscrapers.py* file
-###constants.py
+### constants.py
 This file handles all unchanging constants that are not stored data. These keys include;
   -keywords like "Coliform"
   -ID's for each respective scraped row
