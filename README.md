@@ -16,9 +16,12 @@ or the *start_threading* function call in the __main__ function
 This file handles all standardized DWW websites. Many of the websites follow the exact same format with only slightly different api-endpoints
 This file is essentially a web scraping object class, with a constructor that is built by the *runscrapers.py* file
 ### constants.py
-This file handles all unchanging constants that are not stored data. These keys include;
+ This file handles all unchanging constants that are not stored data. These keys include;
   -keywords like "Coliform"
   -ID's for each respective scraped row
   -log file paths
   -data file paths
   -Expected headers for each given table
+### api_handler.py
+ -All API endpoints and URL's for each state is stored here in different python dictionaries
+ -Standardized states are in the jsp_states dictionary
