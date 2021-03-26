@@ -21,6 +21,7 @@ or the *start_threading* function call in the __main__ function
 This file handles all standardized DWW websites. Many of the websites follow the exact same format with only slightly different api-endpoints
 This file is essentially a web scraping object class, with a constructor that is built by the *runscrapers.py* file
 ### utils.py
+Handles all miscellanious ubiquitous tasks
 - Data cleaning
 - Proper URL's for parsing
 - Builds date ranges
