@@ -115,8 +115,8 @@ jsp_states = {
     },
     'North Carolina': {
         url: 'https://www.pwss.enr.state.nc.us/NCDWW/',
-        coli: 'JSP/SearchDispatch?number=&name=&companyname=&WaterSystemStatusCode=A&county=All'
-              '&WaterSystemType=All&SourceWaterType=All&PointOfContactType=None&SampleType=ColiformSample&'
+        coli: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All'
+              '&SourceWaterType=All&PointOfContactType=None&SampleType=ColiformSample&'
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'SearchDispatch?number=&name=&companyname=&WaterSystemStatusCode=A&county=All&WaterSystemType=All'
               '&SourceWaterType=All&PointOfContactType=None&SampleType=NonTCRAll&stateclassificationcode=All&'

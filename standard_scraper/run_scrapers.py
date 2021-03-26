@@ -63,12 +63,12 @@ def scrape_coli(state, url):
 
 
 def scrape_state(state, state_dict, url):
-    # if state_dict[api_handler.coli] is not None:
-    #     scrape_coli(state, url)
+    if state_dict[api_handler.coli] is not None:
+        scrape_coli(state, url)
     if state_dict[api_handler.chem] is not None:
         scrape_chem(state, url)
-    # if state_dict[api_handler.copper_lead] is not None:
-    #     scrape_copper_lead(state, url)
+    if state_dict[api_handler.copper_lead] is not None:
+        scrape_copper_lead(state, url)
 
 def build_log_handler(log_location):
     #Handles log formatting and timestamping

@@ -53,6 +53,7 @@ CSV_COPPER_LEAD = ['UID', 'PrincipalCountyServed', 'WaterSystemNo.', 'WaterSyste
                        'MonitoringPeriodBeginDate', 'MonitoringPeriodEndDate',
                        'NumberofSamples', 'Measure(mg/l)', 'Analyte']
 
+#Useful for unique ID's
 LAB_SAMPLE = 'LabSampleNo.'
 ANALYTE_CODE = 'AnalyteCode'
 WATER_SYSTEMS_NO = 'WaterSystemNo.'

@@ -132,6 +132,7 @@ class Web_Scraper:
         return analytes
 
     def parse_duplicate_analytes(self, headers, analytes):
+        #Removes all duplicates, builds unique id for each row of data
         if self.chem_scrape == 'CHEM':
             id1 = headers.index(constants.LAB_SAMPLE)
             analytes = remove_duplicates_one_id(self.id_list, analytes, id1)
@@ -197,6 +198,7 @@ class Web_Scraper:
         return id_list
 
     def scrape(self):
+        #Starts all scraping for object across date range
         for start, end in self.date_ranges:
             # Uncomment below code to switch from curl to selenium for web scraping
             # html = get_html_selenium(start, end)
