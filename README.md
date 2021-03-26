@@ -24,5 +24,5 @@ This file is essentially a web scraping object class, with a constructor that is
   - data file paths
   - Expected headers for each given table
 ### api_handler.py
- -All API endpoints and URL's for each state is stored here in different python dictionaries
- -Standardized states are in the jsp_states dictionary
+ - All API endpoints and URL's for each state is stored here in different python dictionaries
+ - Standardized states are in the jsp_states dictionary
