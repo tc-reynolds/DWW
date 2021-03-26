@@ -1,11 +1,24 @@
-COLI_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/standard_scraper/data/coli/Coliform_'
-CHEM_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/standard_scraper/data/chem/Chem_'
-COPPER_LEAD_SAVE_LOCATION = '/mnt/c/Water-Scraper/DWW/standard_scraper/data/copper_lead/Copper_Lead_'
+DATA_DIR = '/mnt/c/DWW/standard_scraper/data/'
+LOG_DIR = '/mnt/c/DWW/standard_scraper/log/'
+COLI_DATA_DIR = '/mnt/c/DWW/standard_scraper/data/coli/'
+CHEM_DATA_DIR = '/mnt/c/DWW/standard_scraper/data/chem/'
+COPPER_LEAD_DATA_DIR = '/mnt/c/DWW/standard_scraper/data/copper_lead/'
 
-COLI_LOG_LOCATION = '/mnt/c/Water-Scraper/DWW/standard_scraper/log/coli/Coliform_'
-CHEM_LOG_LOCATION = '/mnt/c/Water-Scraper/DWW/standard_scraper/log/chem/Chem_'
-COPPER_LEAD_LOG_LOCATION = '/mnt/c/Water-Scraper/DWW/standard_scraper/log/copper_lead/Copper_Lead_'
-RUN_SCRAPER_LOG = '/mnt/c/Water-Scraper/DWW/standard_scraper/log/master_log.log'
+COLI_LOG_DIR = '/mnt/c/DWW/standard_scraper/log/coli/'
+CHEM_LOG_DIR = '/mnt/c/DWW/standard_scraper/log/chem/'
+COPPER_LEAD_LOG_DIR = '/mnt/c/DWW/standard_scraper/log/copper_lead/'
+
+
+COLI_SAVE_LOCATION =  COLI_DATA_DIR + 'Coliform_'
+CHEM_SAVE_LOCATION = CHEM_DATA_DIR + 'Chem_'
+COPPER_LEAD_SAVE_LOCATION = COPPER_LEAD_DATA_DIR + 'Copper_Lead_'
+
+COLI_LOG_LOCATION = COLI_LOG_DIR + 'Coliform_'
+CHEM_LOG_LOCATION = CHEM_LOG_DIR + 'Chem_'
+COPPER_LEAD_LOG_LOCATION = COPPER_LEAD_LOG_DIR + 'Copper_Lead_'
+
+MASTER_LOG_DIR = '/mnt/c/DWW/standard_scraper/log/'
+MASTER_LOG = MASTER_LOG_DIR + 'master.log'
 
 
 DATE_INCREMENT = 30  # Days

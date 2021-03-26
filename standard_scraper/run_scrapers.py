@@ -7,6 +7,7 @@ from datetime import date
 import threading
 from threading import Thread, ThreadError
 import logging
+import os
 
 date_ranges = utils.date_range(date(1999, 3, 5), date(2020, 12, 30))
 filetype = '.csv'
@@ -64,16 +65,16 @@ def scrape_coli(state, url):
 def scrape_state(state, state_dict, url):
     # if state_dict[api_handler.coli] is not None:
     #     scrape_coli(state, url)
-    # if state_dict[api_handler.chem] is not None:
-    #     scrape_chem(state, url)
-    if state_dict[api_handler.copper_lead] is not None:
-        scrape_copper_lead(state, url)
+    if state_dict[api_handler.chem] is not None:
+        scrape_chem(state, url)
+    # if state_dict[api_handler.copper_lead] is not None:
+    #     scrape_copper_lead(state, url)
 
 
 def build_master_logger():
     logger = logging.getLogger('run_scraper_logger')
     logger.setLevel(logging.INFO)
-    logger.addHandler(logging.FileHandler(constants.RUN_SCRAPER_LOG))
+    logger.addHandler(logging.FileHandler(constants.MASTER_LOG))
     return logger
 
 
@@ -98,13 +99,29 @@ def start_threading(states):
             if threading.active_count() == 0:
                 break
 
+def check_dirs():
+    dir_ls = [
+        constants.DATA_DIR,
+        constants.LOG_DIR,
+        constants.COPPER_LEAD_LOG_DIR,
+        constants.CHEM_LOG_DIR,
+        constants.COLI_LOG_DIR,
+        constants.COPPER_LEAD_DATA_DIR,
+        constants.CHEM_DATA_DIR,
+        constants.COLI_DATA_DIR,
+        constants.MASTER_LOG_DIR
+    ]
+    for dir in dir_ls:
+        if not os.path.exists(dir):
+            os.makedirs(os.path.normpath(dir))
 
 def single_state(states, state):
     url = api_handler.get_url(state)
     scrape_state(state, states[state], url)
 
+check_dirs()
 master_logger = build_master_logger()
 if __name__ == '__main__':
     states = api_handler.jsp_states
-    # single_state(states, 'Iowa')
+    # single_state(states, 'Texas')
     start_threading(states)

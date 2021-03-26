@@ -29,7 +29,6 @@ no_data = [
     'South Dakota'
 ]
 jsp_unique = {
-    'Texas': 'https://dww2.tceq.texas.gov/DWW/',
     'Missouri': 'https://dnr.mo.gov/DWW/',
     'Virginia': 'https://odw.vdh.virginia.gov/DWW-VA/',
     'Rhode Island': 'https://dwq.health.ri.gov/DWW/',
@@ -39,6 +38,17 @@ jsp_unique = {
     'Alaska': 'https://dec.alaska.gov/DWW/'
 }
 jsp_states = {
+    'Texas': {
+        url: 'https://dww2.tceq.texas.gov/DWW/',
+        coli: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All&SourceWaterType=All'
+              '&SampleType=ColiformSample&begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All&SourceWaterType=All'
+              '&SampleType=NonTCRAll&stateclassificationcode=All&'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
+                     '&SourceWaterType=All&SampleType=LeadandCopperSummaries&'
+                     'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+    },
     'Delaware': {
         url: 'https://drinkingwater.dhss.delaware.gov/',
         coli: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All'

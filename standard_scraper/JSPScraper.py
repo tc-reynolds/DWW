@@ -92,13 +92,18 @@ class Web_Scraper:
         return rows
 
     def clean_headers(self, headers):
-        # provide header list
-        headers = [clean_data_unit(ele.text) for ele in headers if clean_data_unit(ele.text) in self.expected_headers]
+        # Provide header list
+        parsed_headers = []
+        for ele in headers:
+            new_header = clean_data_unit(ele.text)
+            for expected_header in self.expected_headers:
+                if new_header in expected_header:
+                    parsed_headers.append(expected_header)
+                    break;
         if self.chem_scrape == 'CHEM':
-            headers.append("SampleHref")
-        # headers.sort()
-        self.logger.info(headers)
-        return headers
+            parsed_headers.append("SampleHref")
+        self.logger.info(parsed_headers)
+        return parsed_headers
 
     def build_row(self, cols):
         clean_row = []
