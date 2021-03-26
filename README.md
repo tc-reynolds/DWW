@@ -1,7 +1,8 @@
 # DWW
 ### A Web Scraping program to gather data across all 50 States
 ## How to run
-python3 run_scrapers.py
+python3 run_scrapers.py 
+
 Logging is tracked under;
   - ./log/chem/ or ./log/coli/ or ./log/copper_lead/
   - Any crashing errors will get printed to the console. 
