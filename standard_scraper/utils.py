@@ -87,6 +87,22 @@ def url_with_date(start_date, end_date, url, api_endpoint):
     api_call = api_call.replace('ENDING_DATE', end_date)
     return url + api_call
 
+def check_dirs():
+    #If you don't have logging or data directories locally, this generates them for you
+    dir_ls = [
+        constants.DATA_DIR,
+        constants.LOG_DIR,
+        constants.COPPER_LEAD_LOG_DIR,
+        constants.CHEM_LOG_DIR,
+        constants.COLI_LOG_DIR,
+        constants.COPPER_LEAD_DATA_DIR,
+        constants.CHEM_DATA_DIR,
+        constants.COLI_DATA_DIR,
+        constants.MASTER_LOG_DIR
+    ]
+    for dir in dir_ls:
+        if not os.path.exists(dir):
+            os.makedirs(os.path.normpath(dir))
 
 def initial_driver():
     options = Options()

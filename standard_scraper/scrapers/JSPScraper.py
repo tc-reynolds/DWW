@@ -4,9 +4,7 @@ import time
 from bs4 import BeautifulSoup
 import subprocess
 import requests
-
 import numpy as np
-
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -18,7 +16,7 @@ import pandas as pd
 import constants
 
 
-class Web_Scraper:
+class WebScraper:
     # driver = utils.initial_driver()
     def __init__(self, url, expected_headers, csv_headers, chem_scrape, save_location, logger, date_ranges, api_endpoint):
         self.url = url
