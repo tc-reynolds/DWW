@@ -1,5 +1,6 @@
 from scrapers.JSPScraper import WebScraper
-from factories import scraper_factory, logger_factory
+from factories.scraper_factory import ScraperFactory
+from factories.logger_factory import LoggerFactory
 import sys
 import constants
 import api_handler
@@ -15,18 +16,18 @@ filetype = '.csv'
 
 def scrape_copper_lead(state, url):
     master_logger.info("COPPER/LEAD SCRAPE %s", state)
-    web_scraper = scraper_factory.copper_lead_scraper(state, url, date_ranges, filetype)
+    web_scraper = ScraperFactory.copper_lead_scraper(state, url, date_ranges, filetype)
     web_scraper.scrape()
 
 def scrape_chem(state, url):
     master_logger.info("CHEM SCRAPE %s", state)
-    web_scraper = scraper_factory.chem_scraper(state, url, date_ranges, filetype)
+    web_scraper = ScraperFactory.chem_scraper(state, url, date_ranges, filetype)
     web_scraper.scrape()
 
 
 def scrape_coli(state, url):
     master_logger.info("COLI SCRAPE %s", state)
-    web_scraper = scraper_factory.coli_scraper(state, url, date_ranges, filetype)
+    web_scraper = ScraperFactory.coli_scraper(state, url, date_ranges, filetype)
     web_scraper.scrape()
 
 
@@ -62,7 +63,7 @@ def single_state(states, state):
     scrape_state(state, states[state], url)
 
 utils.check_dirs()
-master_logger = logger_factory.build_master_logger()
+master_logger = LoggerFactory.build_logger('master', constants.MASTER_LOG)
 if __name__ == '__main__':
     states = api_handler.jsp_states
     single_state(states, 'Texas')
