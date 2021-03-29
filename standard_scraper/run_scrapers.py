@@ -41,7 +41,6 @@ def scrape_state(state, state_dict, url):
         scrape_copper_lead(state, url)
 
 def remove_dead_threads(my_threads):
-    master_logger.info("Checking dead threads...")
     for t in my_threads:
         if not t.is_alive():
             # get results from thread
