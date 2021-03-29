@@ -23,6 +23,7 @@ or the *start_threading* function call in the __main__ function
  - Handles all standardized DWW websites. Many of the websites follow the exact same format with only slightly different api-endpoints
  - Built by the *runscrapers.py* file
 ### utils.py
+Handles all miscellanious ubiquitous tasks
 - Data cleaning
 - Proper URL's for parsing
 - Builds date ranges
