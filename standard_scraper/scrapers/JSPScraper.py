@@ -29,7 +29,7 @@ class WebScraper:
         self.api_endpoint = api_endpoint
         self.id_list = self.read_historical()
 
-    def get_html_requests(self, start, end):
+    def get_html_requests(self, start, end, first_try):
         url = utils.url_with_date(start, end, self.url, self.api_endpoint)
         self.logger.info("URL: " + url)
         try:
@@ -42,9 +42,15 @@ class WebScraper:
                 self.logger.error("Bad HTTP Response: %s", status_code)
                 exit()
         except requests.exceptions.ConnectionError as e:
-            self.logger.error(e)
-            self.logger.error("No connection can be made.... Exiting...")
-            exit()
+            #Retry after sleep for 2 seconds, if retry fails, exit
+            if first_try:
+                self.logger.warning("No connection made, retrying....")
+                time.sleep(2)
+                self.get_html_requests(start, end, first_try=False)
+            else:
+                self.logger.error(e)
+                self.logger.error("No connection can be made.... Exiting...")
+                exit()
 
 
     def get_html_curl(self, start, end):
@@ -58,7 +64,7 @@ class WebScraper:
             raw_html = result.stdout.decode('utf-8')
         except:
             raw_html = result.stdout.decode('latin-1')
-            self.logger.error('EXCEPTION: HTML encoded in latin-1...')
+            self.logger.warning('HTML encoded in latin-1...')
         self.logger.info("Removing non-ascii characters...")
         ascii_only_html = ascii_encoding(raw_html)
         html = clean_html(ascii_only_html)
@@ -201,7 +207,7 @@ class WebScraper:
             # Uncomment below code to switch from curl to selenium for web scraping
             # html = get_html_selenium(start, end)
             # html = self.get_html_curl(start, end)
-            html = self.get_html_requests(start, end)
+            html = self.get_html_requests(start, end, first_try=True)
             data_rows = self.get_rows(html)
             if len(data_rows) > 0:
                 analyte_df = self.build_analyte_df(data_rows)
