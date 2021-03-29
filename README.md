@@ -12,14 +12,16 @@ Logging is tracked under;
 Data is tracked under;
   - ./data/chem/ or ./data/coli/ or ./log/copper_lead/
 ## DWW Scripts and information
-### runscrapers.py
-- This file handles logging and building web scrapers for each state. 
+### run_scrapers.py
+- This file starts off all of the services for the scraping class. It uses the scraper_factory.py file to build scrapers,
+  and initiates running the scraper objects once built by the factory
 - It can be run in either single state mode or multi-threaded statemode by flipping the commented state of the *single_state* function call
 or the *start_threading* function call in the __main__ function
 - It reads states from the *api_handler.jsp_states* dictionary
 ### JSPScraper.py
-This file handles all standardized DWW websites. Many of the websites follow the exact same format with only slightly different api-endpoints
-This file is essentially a web scraping object class, with a constructor that is built by the *runscrapers.py* file
+ - Object Class
+ - Handles all standardized DWW websites. Many of the websites follow the exact same format with only slightly different api-endpoints
+ - Built by the *runscrapers.py* file
 ### utils.py
 - Data cleaning
 - Proper URL's for parsing
@@ -37,3 +39,10 @@ This file is essentially a web scraping object class, with a constructor that is
 ### api_handler.py
  - All API endpoints and URL's for each state is stored here in different python dictionaries
  - Standardized states are in the jsp_states dictionary
+### scraper_factory.py
+ - Static Class
+ - Builds scraper objects and returns them to the *run_scrapers.py* class
+
+### logger_factory.py 
+ - Static Class
+ - Builds logger objects to handle logging for web_scraper objects
