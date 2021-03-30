@@ -1,5 +1,4 @@
 import logging
-import constants
 
 class LoggerFactory:
     @staticmethod

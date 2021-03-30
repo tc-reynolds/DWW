@@ -4,6 +4,7 @@ import time
 from bs4 import BeautifulSoup
 import subprocess
 import requests
+from requests.exceptions import ConnectionError, ChunkedEncodingError
 import numpy as np
 import os
 from selenium import webdriver
@@ -13,6 +14,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from urllib3.exceptions import ProtocolError
+from http.client import IncompleteRead
 
 import pandas as pd
 import constants
@@ -43,10 +45,9 @@ class WebScraper:
             else:
                 self.logger.error("Bad HTTP Response: %s", status_code)
                 exit()
-        except requests.exceptions.ConnectionError as e:
+        except (ConnectionError,ChunkedEncodingError,
+                ProtocolError,IncompleteRead) as e:
             #Retry after sleep for 2 seconds, if retry fails, exit
-            self.handle_connection_error(start, end, first_try=False, error=e)
-        except ProtocolError as e:
             self.handle_connection_error(start, end, first_try=False, error=e)
 
 
@@ -81,6 +82,8 @@ class WebScraper:
         return html
 
     def handle_connection_error(self, start, end, first_try, error):
+        self.logger.info("Handling exception for connection...")
+        self.logger.info(f"First Try: {first_try!s}")
         if first_try:
             self.logger.warning("No connection made, retrying....")
             time.sleep(2)
