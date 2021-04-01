@@ -16,6 +16,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 import numpy as np
 import constants
+import config
+
 from random import randint
 
 
@@ -72,13 +74,13 @@ def ascii_encoding(data):
 
 def date_range(start_date, end_date):
     date_range_tup = []
-    end_range = start_date + timedelta(days=constants.DATE_INCREMENT)
+    end_range = start_date + timedelta(days=config.DATE_INCREMENT)
     while end_range <= end_date:
         start_date_str = start_date.strftime("%m/%d/%Y")
         end_range_str = end_range.strftime("%m/%d/%Y")
         date_range_tup.append((start_date_str, end_range_str))
-        start_date = start_date + timedelta(days=constants.DATE_INCREMENT)
-        end_range = start_date + timedelta(days=constants.DATE_INCREMENT)
+        start_date = start_date + timedelta(days=config.DATE_INCREMENT)
+        end_range = start_date + timedelta(days=config.DATE_INCREMENT)
     return date_range_tup
 
 
@@ -98,7 +100,6 @@ def check_dirs():
         constants.COPPER_LEAD_DATA_DIR,
         constants.CHEM_DATA_DIR,
         constants.COLI_DATA_DIR,
-        constants.MASTER_LOG_DIR
     ]
     for dir in dir_ls:
         if not os.path.exists(dir):

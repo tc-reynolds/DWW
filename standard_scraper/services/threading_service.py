@@ -8,7 +8,6 @@ import time
 class ThreadService:
 
     def __init__(self, states, master_logger, scrape_service):
-        print("Threading")
         self.states = states
         self.master_logger = master_logger
         self.scrape_service = scrape_service

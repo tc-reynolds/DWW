@@ -6,7 +6,13 @@ Clone to C: drive
 ## How to run
 python3 run_scrapers.py 
 
-Logging is tracked under;
+## How to Configure
+All configuration is stored underneath config.py.
+Change overall date range scraped, how much is scraped per call, and where data is stored here.
+
+General logging is tracked under master.log in the ./log/ directory
+
+Specific logging is tracked under;
   - ./log/chem/ or ./log/coli/ or ./log/copper_lead/
   - Any crashing errors will get printed to the console. 
 Data is tracked under;
@@ -30,6 +36,10 @@ Handles all miscellanious ubiquitous tasks
 - Builds selenium driver
 - Ensures proper encoding
 - Removes duplicates by list comparison
+### config.py
+Handles variables that we may want to change
+ - Date Range
+ - Date Increment
 ### constants.py
  This file handles all unchanging constants that are not stored data. These keys include;
   - keywords like "Coliform"

@@ -17,12 +17,11 @@ import time
 #Checks whether required directories exist
 #If not, create them.
 utils.check_dirs()
-date_ranges = utils.date_range(date(1999, 3, 5), date(2020, 12, 30))
 states = api_handler.jsp_states
 
 master_logger = LoggerFactory.build_logger('master', constants.MASTER_LOG)
 filetype = '.csv'
-scrape_service = ScrapeService(master_logger, date_ranges, filetype)
+scrape_service = ScrapeService(master_logger, filetype)
 threading_service = ThreadService(states, master_logger, scrape_service)
 
 def single_state(states, state):

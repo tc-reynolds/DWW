@@ -1,10 +1,12 @@
 import api_handler
+from config import START_DATE, END_DATE
+import utils
 from factories.scraper_factory import ScraperFactory
 
 class ScrapeService:
-    def __init__(self, master_logger, date_ranges, filetype):
+    def __init__(self, master_logger, filetype):
         self.master_logger = master_logger
-        self.date_ranges = date_ranges
+        self.date_ranges = utils.date_range(START_DATE, END_DATE)
         self.filetype = filetype
 
     def scrape_copper_lead(self, state, url):
