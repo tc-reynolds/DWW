@@ -33,8 +33,7 @@ class WebScraper:
         self.api_endpoint = api_endpoint
         self.id_list = self.read_historical()
 
-    def get_html_requests(self, start, end, first_try):
-        url = utils.url_with_date(start, end, self.url, self.api_endpoint)
+    def get_html_requests(self, url, first_try):
         self.logger.info("URL: " + url)
         try:
             result = requests.get(url)
@@ -48,7 +47,7 @@ class WebScraper:
         except (ConnectionError,ChunkedEncodingError,
                 ProtocolError,IncompleteRead) as e:
             #Retry after sleep for 2 seconds, if retry fails, exit
-            self.handle_connection_error(start, end, first_try=False, error=e)
+            self.handle_connection_error(url, first_try=False, error=e)
 
 
 
@@ -81,13 +80,13 @@ class WebScraper:
         # driver.close()
         return html
 
-    def handle_connection_error(self, start, end, first_try, error):
+    def handle_connection_error(self, url, first_try, error):
         self.logger.info("Handling exception for connection...")
         self.logger.info(f"First Try: {first_try!s}")
         if first_try:
             self.logger.warning("No connection made, retrying....")
             time.sleep(2)
-            self.get_html_requests(start, end, first_try=False)
+            self.get_html_requests(url, first_try=False)
         else:
             self.logger.error(error)
             self.logger.error("No connection can be made.... Exiting...")
@@ -105,6 +104,9 @@ class WebScraper:
         except:
             self.logger.error("ERROR: No data found, no rows to parse")
         return rows
+
+    def parse_link_headers(self):
+        pass
 
     def clean_headers(self, headers):
         # Provide header list
@@ -212,14 +214,27 @@ class WebScraper:
 
         return id_list
 
+    def get_href_table(self, rows):
+        for index, row in enumerate(rows):
+            url = row[-1]
+            html = self.get_html_requests(url, first_try=True)
+            href_rows = self.get_rows(html)
+            row.pop()
+            rows[index].append(href_rows)
+        return rows
+
+
     def scrape(self):
         #Starts all scraping for object across date range
         for start, end in self.date_ranges:
             # Uncomment below code to switch from curl to selenium for web scraping
             # html = get_html_selenium(start, end)
             # html = self.get_html_curl(start, end)
-            html = self.get_html_requests(start, end, first_try=True)
+            url = utils.date_range(start, end)
+            html = self.get_html_requests(url, first_try=True)
             data_rows = self.get_rows(html)
+            if self.chem_scrape == 'CHEM':
+                data_rows = self.get_href_table(data_rows)
             if len(data_rows) > 0:
                 analyte_df = self.build_analyte_df(data_rows)
                 if analyte_df.empty is False:

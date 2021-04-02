@@ -25,7 +25,6 @@ def clean_data_unit(data):
     data = data.strip()
     data = data.replace('\r', '')
     data = data.replace('\n', '')
-    data = re.sub(r'\s*', '', data)
     return data
 
 
