@@ -1,5 +1,7 @@
 import utils
-from utils import clean_data_unit, ascii_encoding, clean_html, remove_duplicates_two_ids, remove_duplicates_one_id
+from utils import clean_data_unit, ascii_encoding,\
+    clean_html, remove_duplicates_two_ids, \
+    remove_duplicates_one_id, clean_data_unit_no_spaces
 import time
 from bs4 import BeautifulSoup
 import subprocess
@@ -32,7 +34,7 @@ class WebScraper:
         self.date_ranges = date_ranges
         self.api_endpoint = api_endpoint
         self.id_list = self.read_historical()
-
+        # self.id_list = []
     def get_html_requests(self, url, first_try):
         self.logger.info("URL: " + url)
         try:
@@ -47,15 +49,17 @@ class WebScraper:
         except (ConnectionError,ChunkedEncodingError,
                 ProtocolError,IncompleteRead) as e:
             #Retry after sleep for 2 seconds, if retry fails, exit
-            self.handle_connection_error(url, first_try=False, error=e)
+            if first_try:
+                self.logger.error(e)
+                self.logger.warning("First try connecting... Trying again...")
+                self.handle_connection_error(url, first_try=False, error=e)
+            else:
+                self.logger.error(e)
 
 
 
-    def get_html_curl(self, start, end):
+    def get_html_curl(self, url):
         # Scrapes HTML, here you put the selenium crawling:
-        url = utils.url_with_date(start, end, self.url, self.api_endpoint)
-        # print(url)
-        self.logger.info("Scraping dates: " + start + " to " + end)
         self.logger.info("URL: " + url)
         result = subprocess.run(['curl', '-s', url], stdout=subprocess.PIPE)
         try:
@@ -69,12 +73,10 @@ class WebScraper:
         self.logger.info("HTML clean....")
         return html
 
-    def get_html_selenium(self, start, end, api_endpoint):
+    def get_html_selenium(self, url):
         if driver.session_id is None:
             driver.start_client()
-        url = utils.url_with_date(start, end, self.url, api_endpoint)
         driver.get(url)
-        self.logger.info("Scraping dates: " + start + " to " + end)
         self.logger.info("URL: " + url)
         html = driver.execute_script("return document.documentElement.outerHTML ")
         # driver.close()
@@ -105,20 +107,16 @@ class WebScraper:
             self.logger.error("ERROR: No data found, no rows to parse")
         return rows
 
-    def parse_link_headers(self):
-        pass
 
     def clean_headers(self, headers):
         # Provide header list
         parsed_headers = []
         for ele in headers:
-            new_header = clean_data_unit(ele.text)
+            new_header = clean_data_unit_no_spaces(ele.text)
             for expected_header in self.expected_headers:
                 if new_header in expected_header:
                     parsed_headers.append(expected_header)
                     break;
-        if self.chem_scrape == 'CHEM':
-            parsed_headers.append("SampleHref")
         self.logger.info(parsed_headers)
         return parsed_headers
 
@@ -149,7 +147,7 @@ class WebScraper:
         return analytes
 
     def parse_duplicate_analytes(self, headers, analytes):
-        #Removes all duplicates, builds unique id for each row of data
+        #Remove all duplicates, build unique id for each row of data
         if self.chem_scrape == 'CHEM':
             id1 = headers.index(constants.LAB_SAMPLE)
             analytes = remove_duplicates_one_id(self.id_list, analytes, id1)
@@ -163,20 +161,19 @@ class WebScraper:
             analytes = remove_duplicates_two_ids(self.id_list, analytes, id1, id2)
         return analytes
 
-    def build_analyte_df(self, data_rows):
-        self.logger.info("Building dataframe...")
+    def remove_markup(self, data_rows):
+        #Removes HTML from rows and headers
         header_row = data_rows.pop(0)
         headers = header_row.find_all('td')
         headers = self.clean_headers(headers)
         self.logger.info("Headers received.")
         analytes = self.clean_analytes(data_rows)
-        if len(self.id_list) > 0 and len(analytes) > 0:
-            analytes = self.parse_duplicate_analytes(headers, analytes)
+        return headers, analytes
+
+    def build_analyte_df(self, headers, analytes):
         self.logger.info("Num unique samples: " + str(len(analytes)))
         analyte_df = pd.DataFrame(analytes)
         if analyte_df.empty is False:
-            # print(analytes[0])
-            # print(headers)
             analyte_df.columns = headers
             self.logger.info(analyte_df.columns)
         self.logger.info("Dataframe built.")
@@ -187,7 +184,7 @@ class WebScraper:
             db = pd.read_csv(self.save_location, header=None)
             return db
         except pd.errors.EmptyDataError:
-            self.logger.error(self.save_location, " is empty")
+            self.logger.error("%s is empty", self.save_location)
             return None
         except IOError:
             self.logger.error("File does not exist")
@@ -214,33 +211,66 @@ class WebScraper:
 
         return id_list
 
-    def get_href_table(self, rows):
-        for index, row in enumerate(rows):
-            url = row[-1]
+    def clean_href_data(self, href_analytes, lab_sample_value):
+        for i, analyte_row in enumerate(href_analytes):
+            analyte_row = [data.strip() for i, data in enumerate(analyte_row)
+                           if i < len(constants.CHEM_HREF_HEADERS) - 1]
+            for j, data in enumerate(analyte_row):
+                if data == '':
+                    analyte_row[j] = 'NULL'
+            analyte_row.insert(0, lab_sample_value)
+            for k in range(len(analyte_row), len(constants.CHEM_HREF_HEADERS)):
+                analyte_row.append('NULL')
+            href_analytes[i] = analyte_row
+        return href_analytes
+
+
+    def store_href_table(self, headers, analytes):
+        total_href_analytes = []
+        href_headers = []
+        for i, row in enumerate(analytes):
+            url = row[len(row) - 1]
+            analytes[i].pop()
             html = self.get_html_requests(url, first_try=True)
             href_rows = self.get_rows(html)
-            row.pop()
-            rows[index].append(href_rows)
-        return rows
+            href_headers, href_analytes = self.remove_markup(href_rows)
+            ls_index = self.expected_headers.index(constants.LAB_SAMPLE)
+            lab_sample_value = analytes[i][ls_index]
+            href_analytes = self.clean_href_data(href_analytes, lab_sample_value)
+            total_href_analytes.extend(href_analytes)
+            save_location = self.save_location.replace('Chem_', 'Chem_Table_')
+            time.sleep(1)
+        if len(total_href_analytes) > 0:
+            self.write_to_csv(constants.CHEM_HREF_HEADERS, total_href_analytes, save_location)
+        return analytes
 
+
+    def write_to_csv(self, headers, analytes, save_location):
+        if len(analytes) > 0:
+            analyte_df = self.build_analyte_df(headers, analytes)
+            if analyte_df.empty is False:
+                analyte_df.to_csv(save_location, mode='a', header=False)
+        else:
+            self.logger.info("No unique data found...")
 
     def scrape(self):
         #Starts all scraping for object across date range
         for start, end in self.date_ranges:
+            url = utils.url_with_date(start, end, self.url, self.api_endpoint)
             # Uncomment below code to switch from curl to selenium for web scraping
-            # html = get_html_selenium(start, end)
-            # html = self.get_html_curl(start, end)
-            url = utils.date_range(start, end)
+            # html = get_html_selenium(url)
+            # html = self.get_html_curl(url)
             html = self.get_html_requests(url, first_try=True)
             data_rows = self.get_rows(html)
+            headers, analytes = self.remove_markup(data_rows)
+            if len(self.id_list) > 0 and len(analytes) > 0:
+                analytes = self.parse_duplicate_analytes(headers, analytes)
             if self.chem_scrape == 'CHEM':
-                data_rows = self.get_href_table(data_rows)
-            if len(data_rows) > 0:
-                analyte_df = self.build_analyte_df(data_rows)
-                if analyte_df.empty is False:
-                    analyte_df.to_csv(self.save_location, mode='a', header=False)
-            else:
-                self.logger.info("No unique data found...")
+                self.logger.info("Storing href_links")
+                analytes = self.store_href_table(headers, analytes)
+
+            self.write_to_csv(headers, analytes, self.save_location)
+
             self.logger.info("Sleeping 1 seconds...")
             time.sleep(1)
         self.logger.info("Scraping finished....")

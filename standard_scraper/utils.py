@@ -25,6 +25,12 @@ def clean_data_unit(data):
     data = data.strip()
     data = data.replace('\r', '')
     data = data.replace('\n', '')
+    data = " ".join(data.split())
+    return data
+
+def clean_data_unit_no_spaces(data):
+    data = clean_data_unit(data)
+    data = data.replace(' ', '')
     return data
 
 

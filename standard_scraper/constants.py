@@ -14,6 +14,7 @@ COPPER_LEAD_LOG_DIR = LOG_DIR + 'copper_lead/'
 
 COLI_SAVE_LOCATION =  COLI_DATA_DIR + 'Coliform_'
 CHEM_SAVE_LOCATION = CHEM_DATA_DIR + 'Chem_'
+CHEM_TABLE_SAVE_LOCATION = CHEM_DATA_DIR + 'Chem_Table_'
 COPPER_LEAD_SAVE_LOCATION = COPPER_LEAD_DATA_DIR + 'Copper_Lead_'
 
 COLI_LOG_LOCATION = COLI_LOG_DIR + 'Coliform_'
@@ -33,19 +34,24 @@ COLIFORM_HEADERS = ['PrincipalCountyServed', 'WaterSystemNo.',
 CHEM_HEADERS = ['PrincipalCountyServed', 'WaterSystemNo.',
                 'WaterSystemName', 'LabSampleNo.',
                 'Type', 'CollectionDate&Time',
-                'SamplingPoint', 'AnalyteCode','AnalyteName','MethodCode',
-                'LessthanIndicator','LevelType','ReportingLevel',
-                'Concentrationlevel','MonitoringPeriodBeginDate','MonitoringPeriodEndDate']
+                'SamplingPoint']
+
+CHEM_HREF_HEADERS = ['SamplingPoint', 'AnalyteCode','AnalyteName','MethodCode',
+                    'LessthanIndicator','LevelType','ReportingLevel',
+                    'Concentrationlevel','MonitoringPeriodBeginDate','MonitoringPeriodEndDate']
 
 COPPER_LEAD_HEADERS = ['PrincipalCountyServed', 'WaterSystemNo.', 'WaterSystemName',
                        'MonitoringPeriodBeginDate', 'MonitoringPeriodEndDate',
                        'NumberofSamples', 'Measure(mg/l)', 'Analyte']
 
-CSV_COLIFORM = COLIFORM_HEADERS.insert(0, 'UID')
+CSV_COLIFORM = COLIFORM_HEADERS.copy()
+CSV_COLIFORM.insert(0, 'UID')
 
-CSV_CHEM = CHEM_HEADERS.insert(0, 'UID')
+CSV_CHEM = CHEM_HEADERS.copy()
+CSV_CHEM.insert(0, 'UID')
 
-CSV_COPPER_LEAD = COPPER_LEAD_HEADERS.insert(0, 'UID')
+CSV_COPPER_LEAD = COPPER_LEAD_HEADERS.copy()
+CSV_COPPER_LEAD.insert(0, 'UID')
 
 #Useful for unique ID's
 LAB_SAMPLE = 'LabSampleNo.'

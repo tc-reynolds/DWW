@@ -23,7 +23,6 @@ master_logger = LoggerFactory.build_logger('master', constants.MASTER_LOG)
 filetype = '.csv'
 scrape_service = ScrapeService(master_logger, filetype)
 threading_service = ThreadService(states, master_logger, scrape_service)
-u
 def single_state(states, state):
     url = api_handler.get_url(state)
     scrape_service.scrape_state(state, states[state], url)
@@ -32,6 +31,6 @@ def all_states(states):
     threading_service.start_threading(states)
 
 if __name__ == '__main__':
-    single_state(states, 'Delaware')
-    # all_states(states)
+    # single_state(states, 'Montana')
+    all_states(states)
 
