@@ -50,11 +50,10 @@ class WebScraper:
                 ProtocolError,IncompleteRead) as e:
             #Retry after sleep for 2 seconds, if retry fails, exit
             if first_try:
-                self.logger.error(e)
                 self.logger.warning("First try connecting... Trying again...")
-                self.handle_connection_error(url, first_try=False, error=e)
+                self.handle_connection_error(url, first_try=True, error=e)
             else:
-                self.logger.error(e)
+                self.handle_connection_error(url, first_try=False, error=e)
 
 
 
@@ -86,6 +85,7 @@ class WebScraper:
         self.logger.info("Handling exception for connection...")
         self.logger.info(f"First Try: {first_try!s}")
         if first_try:
+            self.logger.error(error)
             self.logger.warning("No connection made, retrying....")
             time.sleep(2)
             self.get_html_requests(url, first_try=False)
@@ -108,12 +108,12 @@ class WebScraper:
         return rows
 
 
-    def clean_headers(self, headers):
+    def clean_headers(self, headers, expected_headers):
         # Provide header list
         parsed_headers = []
         for ele in headers:
             new_header = clean_data_unit_no_spaces(ele.text)
-            for expected_header in self.expected_headers:
+            for expected_header in expected_headers:
                 if new_header in expected_header:
                     parsed_headers.append(expected_header)
                     break;
@@ -146,7 +146,7 @@ class WebScraper:
             analytes.append(clean_row)
         return analytes
 
-    def parse_duplicate_analytes(self, headers, analytes):
+    def remove_duplicate_analytes(self, headers, analytes):
         #Remove all duplicates, build unique id for each row of data
         if self.chem_scrape == 'CHEM':
             id1 = headers.index(constants.LAB_SAMPLE)
@@ -161,17 +161,16 @@ class WebScraper:
             analytes = remove_duplicates_two_ids(self.id_list, analytes, id1, id2)
         return analytes
 
-    def remove_markup(self, data_rows):
+    def remove_markup(self, data_rows, expected_headers):
         #Removes HTML from rows and headers
         header_row = data_rows.pop(0)
         headers = header_row.find_all('td')
-        headers = self.clean_headers(headers)
+        headers = self.clean_headers(headers, expected_headers)
         self.logger.info("Headers received.")
         analytes = self.clean_analytes(data_rows)
         return headers, analytes
 
     def build_analyte_df(self, headers, analytes):
-        self.logger.info("Num unique samples: " + str(len(analytes)))
         analyte_df = pd.DataFrame(analytes)
         if analyte_df.empty is False:
             analyte_df.columns = headers
@@ -219,6 +218,7 @@ class WebScraper:
                 if data == '':
                     analyte_row[j] = 'NULL'
             analyte_row.insert(0, lab_sample_value)
+            #Fill null if no data found or row mismatch.
             for k in range(len(analyte_row), len(constants.CHEM_HREF_HEADERS)):
                 analyte_row.append('NULL')
             href_analytes[i] = analyte_row
@@ -226,26 +226,34 @@ class WebScraper:
 
 
     def store_href_table(self, headers, analytes):
+        self.logger.info("Looping through hrefs to store CHEM tables..")
         total_href_analytes = []
         href_headers = []
+        self.logger.info("%s links to process...", str(len(analytes)))
         for i, row in enumerate(analytes):
             url = row[len(row) - 1]
             analytes[i].pop()
             html = self.get_html_requests(url, first_try=True)
             href_rows = self.get_rows(html)
-            href_headers, href_analytes = self.remove_markup(href_rows)
-            ls_index = self.expected_headers.index(constants.LAB_SAMPLE)
-            lab_sample_value = analytes[i][ls_index]
-            href_analytes = self.clean_href_data(href_analytes, lab_sample_value)
-            total_href_analytes.extend(href_analytes)
-            save_location = self.save_location.replace('Chem_', 'Chem_Table_')
-            time.sleep(1)
+            if len(href_rows) > 0:
+                href_headers, href_analytes = self.remove_markup(href_rows, constants.CHEM_HREF_HEADERS)
+                self.logger.info("Num HREF analytes found; %s", str(len(href_analytes)))
+                ls_index = self.expected_headers.index(constants.LAB_SAMPLE)
+                lab_sample_value = analytes[i][ls_index]
+                href_analytes = self.clean_href_data(href_analytes, lab_sample_value)
+                total_href_analytes.extend(href_analytes)
+                save_location = self.save_location.replace('Chem_', 'Chem_Table_')
+                self.logger.info("Sleeping .5 seconds...")
+            time.sleep(.5)
+        self.logger.info("Total number of HREF analytes; %s", str(len(total_href_analytes)))
         if len(total_href_analytes) > 0:
             self.write_to_csv(constants.CHEM_HREF_HEADERS, total_href_analytes, save_location)
         return analytes
 
 
     def write_to_csv(self, headers, analytes, save_location):
+        self.logger.info("Writing to %s", save_location)
+        self.logger.info("Num unique samples: " + str(len(analytes)))
         if len(analytes) > 0:
             analyte_df = self.build_analyte_df(headers, analytes)
             if analyte_df.empty is False:
@@ -262,15 +270,15 @@ class WebScraper:
             # html = self.get_html_curl(url)
             html = self.get_html_requests(url, first_try=True)
             data_rows = self.get_rows(html)
-            headers, analytes = self.remove_markup(data_rows)
-            if len(self.id_list) > 0 and len(analytes) > 0:
-                analytes = self.parse_duplicate_analytes(headers, analytes)
-            if self.chem_scrape == 'CHEM':
-                self.logger.info("Storing href_links")
-                analytes = self.store_href_table(headers, analytes)
-
-            self.write_to_csv(headers, analytes, self.save_location)
-
+            if len(data_rows) > 0:
+                headers, analytes = self.remove_markup(data_rows, self.expected_headers)
+                if len(self.id_list) > 0 and len(analytes) > 0:
+                    analytes = self.remove_duplicate_analytes(headers, analytes)
+                if self.chem_scrape == 'CHEM':
+                    self.logger.info("Storing href links...")
+                    analytes = self.store_href_table(headers, analytes)
+                self.write_to_csv(headers, analytes, self.save_location)
             self.logger.info("Sleeping 1 seconds...")
             time.sleep(1)
+
         self.logger.info("Scraping finished....")
