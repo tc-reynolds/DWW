@@ -8,3 +8,6 @@ DATE_INCREMENT = 30  # Days
 START_DATE = date(1999, 1, 1)
 END_DATE = date.today()
 #-------------------------------------------------------------------------
+#-Change this to determine how many states we will scrape concurrently
+THREADING_THRESHOLD = 20
+#-------------------------------------------------------------------------

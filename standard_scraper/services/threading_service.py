@@ -3,6 +3,7 @@ import constants
 # from tqdm import tqdm_gui
 import api_handler
 import threading
+import config
 from threading import Thread, ThreadError
 import time
 
@@ -42,7 +43,7 @@ class ThreadService:
     def start_threading(self, states):
         #Handles multiple states running at a time
         my_threads = {}
-        threshold = 10
+        threshold = config.THREADING_THRESHOLD
         for state in states:
             self.master_logger.info("Crawling: %s", state)
             url = api_handler.get_url(state)

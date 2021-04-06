@@ -17,6 +17,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from urllib3.exceptions import ProtocolError
 from http.client import IncompleteRead
+import csv
 
 import pandas as pd
 import constants
@@ -44,17 +45,21 @@ class WebScraper:
                 html = clean_html(result.text)
                 return html
             else:
-                self.logger.error("Bad HTTP Response: %s", status_code)
-                exit()
+                error = "Bad HTTP Response: %s" + str(status_code)
+                if first_try:
+                    html = self.handle_connection_error(url, True, error)
+                    return html
+                else:
+                    self.logger.error(error)
+                    return False
         except (ConnectionError,ChunkedEncodingError,
                 ProtocolError,IncompleteRead) as e:
             #Retry after sleep for 2 seconds, if retry fails, exit
             if first_try:
                 self.logger.warning("First try connecting... Trying again...")
-                self.handle_connection_error(url, first_try=True, error=e)
+                return self.handle_connection_error(url, first_try=True, error=e)
             else:
-                self.handle_connection_error(url, first_try=False, error=e)
-
+                return self.handle_connection_error(url, first_try=False, error=e)
 
 
     def get_html_curl(self, url):
@@ -88,7 +93,8 @@ class WebScraper:
             self.logger.error(error)
             self.logger.warning("No connection made, retrying....")
             time.sleep(2)
-            self.get_html_requests(url, first_try=False)
+            html = self.get_html_requests(url, first_try=False)
+            return html
         else:
             self.logger.error(error)
             self.logger.error("No connection can be made.... Exiting...")
@@ -224,6 +230,12 @@ class WebScraper:
             href_analytes[i] = analyte_row
         return href_analytes
 
+    def build_href_analytes(self, href_rows, lab_sample_value):
+        href_headers, href_analytes = self.remove_markup(href_rows, constants.CHEM_HREF_HEADERS)
+        self.logger.info("Num HREF analytes found; %s", str(len(href_analytes)))
+        href_analytes = self.clean_href_data(href_analytes, lab_sample_value)
+        return href_headers, href_analytes
+
 
     def store_href_table(self, headers, analytes):
         self.logger.info("Looping through hrefs to store CHEM tables..")
@@ -231,22 +243,21 @@ class WebScraper:
         href_headers = []
         self.logger.info("%s links to process...", str(len(analytes)))
         for i, row in enumerate(analytes):
-            url = row[len(row) - 1]
-            analytes[i].pop()
+            url = analytes[i].pop()
             html = self.get_html_requests(url, first_try=True)
+            if html is False:
+                continue
             href_rows = self.get_rows(html)
             if len(href_rows) > 0:
-                href_headers, href_analytes = self.remove_markup(href_rows, constants.CHEM_HREF_HEADERS)
-                self.logger.info("Num HREF analytes found; %s", str(len(href_analytes)))
-                ls_index = self.expected_headers.index(constants.LAB_SAMPLE)
-                lab_sample_value = analytes[i][ls_index]
-                href_analytes = self.clean_href_data(href_analytes, lab_sample_value)
+                lab_sample_index = self.expected_headers.index(constants.LAB_SAMPLE)
+                lab_sample_num = analytes[i][lab_sample_index]
+                href_headers, href_analytes = self.build_href_analytes(href_rows, lab_sample_num)
                 total_href_analytes.extend(href_analytes)
-                save_location = self.save_location.replace('Chem_', 'Chem_Table_')
-                self.logger.info("Sleeping .5 seconds...")
+            self.logger.info("Sleeping .5 seconds...")
             time.sleep(.5)
         self.logger.info("Total number of HREF analytes; %s", str(len(total_href_analytes)))
         if len(total_href_analytes) > 0:
+            save_location = self.save_location.replace('Chem_', 'Chem_Table_')
             self.write_to_csv(constants.CHEM_HREF_HEADERS, total_href_analytes, save_location)
         return analytes
 
@@ -269,6 +280,8 @@ class WebScraper:
             # html = get_html_selenium(url)
             # html = self.get_html_curl(url)
             html = self.get_html_requests(url, first_try=True)
+            if html is False:
+                continue
             data_rows = self.get_rows(html)
             if len(data_rows) > 0:
                 headers, analytes = self.remove_markup(data_rows, self.expected_headers)

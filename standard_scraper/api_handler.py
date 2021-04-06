@@ -316,12 +316,6 @@ def known_states():
     known_state_list = []
     for key in jsp_states:
         known_state_list.append(key)
-    # for key in jsp_unique:
-    #     known_state_list.append(key)
-    # for key in non_jsp_states:
-    #     known_state_list.append(key)
-    # for item in no_data:
-    #     known_state_list.append(item)
     return known_state_list
 
 
@@ -353,12 +347,8 @@ def diff(li1, li2):
 
 
 if __name__ == '__main__':
-    # handled_states = known_states()
-    # states_left = diff(state_names, handled_states)
-    # states_left.sort()
-    # print("REMAINING STATES")
-    # print(states_left)
-    # print("Number of States: " + str(len(states_left)))
-    # print("Num Standard JSP States: " + str(len(jsp_states.keys())))
-    # crawl_new()
-    print(known_states())
+    known = known_states()
+    print("Num States known: " + str(len(known)))
+    print(known)
+    print("States not yet known: " )
+    print(diff(known, state_names))
