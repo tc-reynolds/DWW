@@ -31,6 +31,6 @@ def all_states(states):
     threading_service.start_threading(states)
 
 if __name__ == '__main__':
-    # single_state(states, 'Montana')
-    all_states(states)
+    single_state(states, 'Arizona')
+    # all_states(states)
 

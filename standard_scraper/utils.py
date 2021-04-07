@@ -99,12 +99,13 @@ def check_dirs():
     dir_ls = [
         constants.DATA_DIR,
         constants.LOG_DIR,
+        constants.DATE_DIR,
         constants.COPPER_LEAD_LOG_DIR,
         constants.CHEM_LOG_DIR,
         constants.COLI_LOG_DIR,
         constants.COPPER_LEAD_DATA_DIR,
         constants.CHEM_DATA_DIR,
-        constants.COLI_DATA_DIR,
+        constants.COLI_DATA_DIR
     ]
     for dir in dir_ls:
         if not os.path.exists(dir):

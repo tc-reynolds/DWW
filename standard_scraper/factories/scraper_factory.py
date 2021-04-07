@@ -23,7 +23,7 @@ class ScraperFactory:
         csv_headers = constants.CSV_COPPER_LEAD
         web_scraper = WebScraper(url, expected_headers, csv_headers,
                                  chem_scrape, save_location, logger,
-                                 date_ranges, api_endpoint)
+                                 date_ranges, api_endpoint, state)
         return web_scraper
 
     @staticmethod
@@ -38,7 +38,7 @@ class ScraperFactory:
         csv_headers = constants.CSV_CHEM
         web_scraper = WebScraper(url, expected_headers, csv_headers,
                                  chem_scrape, save_location, logger,
-                                 date_ranges, api_endpoint)
+                                 date_ranges, api_endpoint, state)
         return web_scraper
 
     @staticmethod
@@ -55,6 +55,6 @@ class ScraperFactory:
         csv_headers = constants.CSV_COLIFORM
         web_scraper = WebScraper(url, expected_headers, csv_headers,
                                  chem_scrape, save_location, logger,
-                                 date_ranges, api_endpoint)
+                                 date_ranges, api_endpoint, state)
         return web_scraper
 

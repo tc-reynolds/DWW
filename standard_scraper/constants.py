@@ -3,6 +3,8 @@ from config import BASE_DIR
 DATA_DIR = BASE_DIR + 'data/'
 LOG_DIR = BASE_DIR + 'log/'
 
+DATE_DIR = BASE_DIR + 'last_date_scraped/'
+DATE_STATE_FILENAME = DATE_DIR + 'STATE_NAME.txt'
 COLI_DATA_DIR = BASE_DIR + 'data/coli/'
 CHEM_DATA_DIR = BASE_DIR + 'data/chem/'
 COPPER_LEAD_DATA_DIR = BASE_DIR + 'data/copper_lead/'
