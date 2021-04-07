@@ -91,6 +91,7 @@ class WebScraper:
         return html
 
     def get_html_selenium(self, url):
+        driver = utils.initialize_driver()
         if driver.session_id is None:
             driver.start_client()
         driver.get(url)
@@ -281,7 +282,8 @@ class WebScraper:
             self.write_to_csv(constants.CHEM_HREF_HEADERS, total_href_analytes, save_location)
         return analytes
 
-
+    def write_last_checked(self, date):
+        pass
     def write_to_csv(self, headers, analytes, save_location):
         self.logger.info("Writing to %s", save_location)
 
@@ -296,9 +298,9 @@ class WebScraper:
             self.last_date_scraped = start
             self.logger.info("LATEST DATE SCRAPED: %s", self.last_date_scraped)
             # Uncomment below code to switch from curl to selenium for web scraping
-            # html = get_html_selenium(url)
+            html = self.get_html_selenium(url)
             # html = self.get_html_curl(url)
-            html = self.get_html_requests(url, first_try=True)
+            # html = self.get_html_requests(url, first_try=True)
             if html is False:
                 continue
             data_rows = self.get_rows(html)

@@ -27,6 +27,9 @@ class ScraperFactory:
         return web_scraper
 
     @staticmethod
+    def chem_scraper_arizona():
+        pass
+    @staticmethod
     def chem_scraper(state, url, date_ranges, filetype):
         save_location = constants.CHEM_SAVE_LOCATION + state + filetype
         log_location = constants.CHEM_LOG_LOCATION + state + '.log'

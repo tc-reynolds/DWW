@@ -43,7 +43,7 @@ class ThreadService:
     def start_threading(self, states):
         #Handles multiple states running at a time
         my_threads = {}
-        threshold = config.THREADING_THRESHOLD
+        threshold = 10
         for state in states:
             self.master_logger.info("Crawling: %s", state)
             url = api_handler.get_url(state)
