@@ -38,6 +38,8 @@ class WebScraper:
         self.state = state
         self.id_list = self.read_historical()
         self.last_date_scraped = date_ranges[0]
+        print('date_ranges[0]')
+        print(date_ranges[0])
         atexit.register(self.exit_handler)
 
     def exit_handler(self):
