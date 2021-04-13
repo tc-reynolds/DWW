@@ -27,10 +27,18 @@ def single_state(states, state):
     url = api_handler.get_url(state)
     scrape_service.scrape_state(state, states[state], url)
 
+def list_of_states(state_list):
+    state_dict = {}
+    for state in state_list:
+        if states[state]:
+            state_dict[state] = states[state]
+    threading_service.start_threading(state_dict)
+
 def all_states(states):
     threading_service.start_threading(states)
 
 if __name__ == '__main__':
-    # single_state(states, 'Montana')
-    all_states(states)
+    # single_state(states, 'Arizona')
+    list_of_states(['Arizona', 'Texas', 'Illinois'])
+    # all_states(states)
 
