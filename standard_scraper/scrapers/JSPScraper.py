@@ -3,7 +3,7 @@ from utils import clean_data_unit, ascii_encoding,\
     clean_html, remove_duplicates_two_ids, \
     remove_duplicates_one_id, clean_data_unit_no_spaces
 import constants
-import HTML_Scraper
+import scrapers.HTML_Scraper
 import time
 from bs4 import BeautifulSoup
 
