@@ -38,7 +38,7 @@ def all_states(states):
     threading_service.start_threading(states)
 
 if __name__ == '__main__':
-    # single_state(states, 'Arizona')
-    list_of_states(['Arizona', 'Texas', 'Illinois'])
-    # all_states(states)
+    # single_state(states, 'Illinois')
+    # list_of_states(['Arizona', 'Texas', 'Illinois'])
+    all_states(states)
 

@@ -1,7 +1,6 @@
 import utils
 from utils import clean_data_unit, ascii_encoding,\
-    clean_html, remove_duplicates_two_ids, \
-    remove_duplicates_one_id, clean_data_unit_no_spaces
+    clean_html, clean_data_unit_no_spaces
 import time
 from bs4 import BeautifulSoup
 import subprocess
@@ -154,17 +153,7 @@ class WebScraper:
 
     def remove_duplicate_analytes(self, headers, analytes):
         #Remove all duplicates, build unique id for each row of data
-        if self.chem_scrape == 'CHEM':
-            id1 = headers.index(constants.LAB_SAMPLE)
-            analytes = remove_duplicates_one_id(self.id_list, analytes, id1)
-        elif self.chem_scrape == 'COPPER_LEAD':
-            id1 = headers.index(constants.WATER_SYSTEMS_NO)
-            id2 = headers.index(constants.ANALYTE)
-            analytes = remove_duplicates_two_ids(self.id_list, analytes, id1, id2)
-        elif self.chem_scrape == 'COLI':
-            id1 = headers.index(constants.LAB_SAMPLE)
-            id2 = headers.index(constants.ANALYTE_CODE)
-            analytes = remove_duplicates_two_ids(self.id_list, analytes, id1, id2)
+        analytes = utils.list_comparison(self.id_list, analytes, self.logger)
         return analytes
 
     def remove_markup(self, data_rows, expected_headers):
@@ -187,7 +176,10 @@ class WebScraper:
     def read_csv(self):
         try:
             db = pd.read_csv(self.save_location, header=None)
-            return db
+            with open(self.save_location) as f:
+                reader = csv.reader(f)
+                db = list(reader)
+                return db
         except pd.errors.EmptyDataError:
             self.logger.error("%s is empty", self.save_location)
             return None
@@ -197,23 +189,13 @@ class WebScraper:
 
     def read_historical(self):
         self.logger.info("Reading historical data to check for duplicates...")
-        db = self.read_csv()
-        id_list = []
-        if db is not None:
-            if db.empty is False:
-                db.columns = self.csv_headers
-                if self.chem_scrape == 'CHEM':
-                    id_list = db[constants.LAB_SAMPLE]
-                elif self.chem_scrape == 'COPPER_LEAD':
-                    water_system_no = db[constants.WATER_SYSTEMS_NO]
-                    analyte_name = db[constants.ANALYTE]
-                    id_list = [str(i) + str(j) for i, j in zip(water_system_no, analyte_name)]
-                elif self.chem_scrape == 'COLI':
-                    lab_sample = db[constants.LAB_SAMPLE]
-                    analyte_code = db[constants.ANALYTE_CODE]
-                    id_list = [str(i) + str(j) for i, j in zip(lab_sample, analyte_code)]
-                self.logger.info("Num Duplicates to check: " + str(len(id_list)))
-
+        id_list = self.read_csv()
+        if id_list is not None:
+            self.logger.info("Num Duplicates to check: " + str(len(id_list)))
+            for i, row in enumerate(id_list):
+                id_list[i] = str(row[1:])
+        else:
+            id_list = []
         return id_list
 
     def clean_href_data(self, href_analytes, lab_sample_value):

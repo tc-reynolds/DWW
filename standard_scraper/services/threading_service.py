@@ -45,7 +45,6 @@ class ThreadService:
         my_threads = {}
         threshold = config.THREADING_THRESHOLD
         for state in states:
-            self.master_logger.info("Crawling: %s", state)
             url = api_handler.get_url(state)
             try:
                 scraper_thread = Thread(name=state, target=self.scrape_service.scrape_state, args=(state, states[state], url,))
