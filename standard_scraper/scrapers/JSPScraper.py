@@ -168,6 +168,7 @@ class WebScraper:
     def build_analyte_df(self, headers, analytes):
         analyte_df = pd.DataFrame(analytes)
         if analyte_df.empty is False:
+            self.logger.info(headers)
             analyte_df.columns = headers
             self.logger.info(analyte_df.columns)
         self.logger.info("Dataframe built.")
@@ -225,6 +226,7 @@ class WebScraper:
         href_headers = []
         self.logger.info("%s links to process...", str(len(analytes)))
         for i, row in enumerate(analytes):
+            self.logger.info("%s links left...", str(len(analytes) - i))
             url = analytes[i].pop()
             html = self.get_html_requests(url, first_try=True)
             if html is False:
@@ -235,8 +237,8 @@ class WebScraper:
                 lab_sample_num = analytes[i][lab_sample_index]
                 href_headers, href_analytes = self.build_href_analytes(href_rows, lab_sample_num)
                 total_href_analytes.extend(href_analytes)
-            self.logger.info("Sleeping .5 seconds...")
-            time.sleep(.5)
+            self.logger.info("Sleeping .1 seconds...")
+            time.sleep(.1)
         self.logger.info("Total number of HREF analytes; %s", str(len(total_href_analytes)))
         if len(total_href_analytes) > 0:
             save_location = self.save_location.replace('Chem_', 'Chem_Table_')
