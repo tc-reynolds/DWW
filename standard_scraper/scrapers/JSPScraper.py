@@ -1,7 +1,6 @@
 import utils
 from utils import clean_data_unit, ascii_encoding,\
-    clean_html, remove_duplicates_two_ids, \
-    remove_duplicates_one_id, clean_data_unit_no_spaces
+    clean_html, clean_data_unit_no_spaces
 import time
 from bs4 import BeautifulSoup
 import subprocess
@@ -172,21 +171,8 @@ class WebScraper:
 
     def remove_duplicate_analytes(self, headers, analytes):
         #Remove all duplicates, build unique id for each row of data
-        is_empty = False
-        if self.chem_scrape == 'CHEM':
-            id1 = headers.index(constants.LAB_SAMPLE)
-            analytes = remove_duplicates_one_id(self.id_list, analytes, id1)
-        elif self.chem_scrape == 'COPPER_LEAD':
-            id1 = headers.index(constants.WATER_SYSTEMS_NO)
-            id2 = headers.index(constants.ANALYTE)
-            analytes = remove_duplicates_two_ids(self.id_list, analytes, id1, id2)
-        elif self.chem_scrape == 'COLI':
-            id1 = headers.index(constants.LAB_SAMPLE)
-            id2 = headers.index(constants.ANALYTE_CODE)
-            analytes = remove_duplicates_two_ids(self.id_list, analytes, id1, id2)
-        if len(analytes) <= 0:
-            is_empty = True
-        return analytes, is_empty
+        analytes = utils.list_comparison(self.id_list, analytes, self.logger)
+        return analytes
 
     def remove_markup(self, data_rows, expected_headers):
         #Removes HTML from rows and headers
@@ -200,6 +186,7 @@ class WebScraper:
     def build_analyte_df(self, headers, analytes):
         analyte_df = pd.DataFrame(analytes)
         if analyte_df.empty is False:
+            self.logger.info(headers)
             analyte_df.columns = headers
             self.logger.info(analyte_df.columns)
         self.logger.info("Dataframe built.")
@@ -208,7 +195,10 @@ class WebScraper:
     def read_csv(self):
         try:
             db = pd.read_csv(self.save_location, header=None)
-            return db
+            with open(self.save_location) as f:
+                reader = csv.reader(f)
+                db = list(reader)
+                return db
         except pd.errors.EmptyDataError:
             self.logger.error("%s is empty", self.save_location)
             return None
@@ -220,24 +210,15 @@ class WebScraper:
 
     def read_historical(self):
         self.logger.info("Reading historical data to check for duplicates...")
-        db = self.read_csv()
-        id_list = []
-        if db is not None:
-            if db.empty is False:
-                db.columns = self.csv_headers
-                if self.chem_scrape == 'CHEM':
-                    id_list = db[constants.LAB_SAMPLE]
-                elif self.chem_scrape == 'COPPER_LEAD':
-                    water_system_no = db[constants.WATER_SYSTEMS_NO]
-                    analyte_name = db[constants.ANALYTE]
-                    id_list = [str(i) + str(j) for i, j in zip(water_system_no, analyte_name)]
-                elif self.chem_scrape == 'COLI':
-                    lab_sample = db[constants.LAB_SAMPLE]
-                    analyte_code = db[constants.ANALYTE_CODE]
-                    id_list = [str(i) + str(j) for i, j in zip(lab_sample, analyte_code)]
-                self.logger.info("Num Duplicates to check: " + str(len(id_list)))
-
+        id_list = self.read_csv()
+        if id_list is not None:
+            self.logger.info("Num Duplicates to check: " + str(len(id_list)))
+            for i, row in enumerate(id_list):
+                id_list[i] = str(row[1:])
+        else:
+            id_list = []
         return id_list
+
     def clean_href_data(self, href_analytes, lab_sample_value):
         for i, analyte_row in enumerate(href_analytes):
             analyte_row = [data.strip() for i, data in enumerate(analyte_row)
@@ -265,6 +246,7 @@ class WebScraper:
         href_headers = []
         self.logger.info("%s links to process...", str(len(analytes)))
         for i, row in enumerate(analytes):
+            self.logger.info("%s links left...", str(len(analytes) - i))
             url = analytes[i].pop()
             html = self.get_html_requests(url, first_try=True)
             if html is False:
@@ -274,10 +256,9 @@ class WebScraper:
                 lab_sample_index = self.expected_headers.index(constants.LAB_SAMPLE)
                 lab_sample_num = analytes[i][lab_sample_index]
                 href_headers, href_analytes = self.build_href_analytes(href_rows, lab_sample_num)
-                self.logger.info("Num HREF links remaining to scrape: %s", str(len(analytes) - i))
                 total_href_analytes.extend(href_analytes)
-            self.logger.info("Sleeping .5 seconds...")
-            time.sleep(.5)
+            self.logger.info("Sleeping .1 seconds...")
+            time.sleep(.1)
         self.logger.info("Total number of HREF analytes; %s", str(len(total_href_analytes)))
         if len(total_href_analytes) > 0:
             save_location = self.save_location.replace('Chem_', 'Chem_Table_')
@@ -288,10 +269,13 @@ class WebScraper:
         pass
     def write_to_csv(self, headers, analytes, save_location):
         self.logger.info("Writing to %s", save_location)
-
-        analyte_df = self.build_analyte_df(headers, analytes)
-        if analyte_df.empty is False:
-            analyte_df.to_csv(save_location, mode='a', header=False)
+        self.logger.info("Num unique samples: " + str(len(analytes)))
+        if len(analytes) > 0:
+            analyte_df = self.build_analyte_df(headers, analytes)
+            if analyte_df.empty is False:
+                analyte_df.to_csv(save_location, mode='a', header=False)
+        else:
+            self.logger.info("No unique data found...")
 
     def scrape(self):
         #Starts all scraping for object across date range
@@ -300,9 +284,9 @@ class WebScraper:
             self.last_date_scraped = start
             self.logger.info("LATEST DATE SCRAPED: %s", self.last_date_scraped)
             # Uncomment below code to switch from curl to selenium for web scraping
-            html = self.get_html_selenium(url)
+            # html = get_html_selenium(url)
             # html = self.get_html_curl(url)
-            # html = self.get_html_requests(url, first_try=True)
+            html = self.get_html_requests(url, first_try=True)
             if html is False:
                 continue
             data_rows = self.get_rows(html)
