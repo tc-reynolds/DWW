@@ -37,13 +37,11 @@ class WebScraper:
         self.state = state
         self.id_list = self.read_historical()
         self.last_date_scraped = date_ranges[0]
-        print('date_ranges[0]')
-        print(date_ranges[0])
         atexit.register(self.exit_handler)
 
     def exit_handler(self):
         file1 = open(constants.DATE_DIR + self.state + '.txt', "w")  # write mode
-        file1.write(self.last_date_scraped)
+        file1.write(str(self.last_date_scraped))
         file1.close()
 
     def get_html_requests(self, url, first_try):
@@ -70,8 +68,6 @@ class WebScraper:
                 return self.handle_connection_error(url, first_try=True, error=e)
             else:
                 return self.handle_connection_error(url, first_try=False, error=e)
-        finally:
-            self.exit_handler()
 
 
     def get_html_curl(self, url):
@@ -83,8 +79,6 @@ class WebScraper:
         except:
             raw_html = result.stdout.decode('latin-1')
             self.logger.warning('HTML encoded in latin-1...')
-        finally:
-            self.exit_handler()
         self.logger.info("Removing non-ascii characters...")
         ascii_only_html = ascii_encoding(raw_html)
         html = clean_html(ascii_only_html)
@@ -126,8 +120,6 @@ class WebScraper:
             self.logger.info("Rows read.")
         except:
             self.logger.error("ERROR: No data found, no rows to parse")
-        finally:
-            self.exit_handler()
         return rows
 
 
@@ -205,8 +197,6 @@ class WebScraper:
         except IOError:
             self.logger.error("File does not exist")
             return None
-        finally:
-            self.exit_handler()
 
     def read_historical(self):
         self.logger.info("Reading historical data to check for duplicates...")
@@ -279,6 +269,7 @@ class WebScraper:
 
     def scrape(self):
         #Starts all scraping for object across date range
+        self.logger.info(self.date_ranges)
         for start, end in self.date_ranges:
             url = utils.url_with_date(start, end, self.url, self.api_endpoint)
             self.last_date_scraped = start
