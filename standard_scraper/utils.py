@@ -40,34 +40,20 @@ def clean_html(raw_html):
     return html
 
 
-def remove_duplicates_two_ids(checklist, scraped_list, id1, id2):
-    columns = list(zip(*scraped_list))  # Transpose rows to columns
-    # print(scraped_list)
-    # print(len(columns))
-    sample_id_list = list(columns[id1])  # Gets only the id column
-    analyte_id_list = list(columns[id2])
-    zip_list = zip(sample_id_list, analyte_id_list)
-    combined_list = [i + j for i, j in zip_list]
-    unique_list = list_comparison(checklist, scraped_list, combined_list)
-    return unique_list
-
-
-# Remove duplicates based on ID
-def remove_duplicates_one_id(checklist, scraped_list, id_index):
-    columns = list(zip(*scraped_list))  # Transpose rows to columns
-    sample_id_list = list(columns[id_index])  # Gets only the id column
-    unique_list = list_comparison(checklist, scraped_list, sample_id_list)
-    return unique_list
-
-
-def list_comparison(checklist, scraped_list, sample_id_list):
-    matches = set(checklist).intersection(sample_id_list)  # Compares for duplicate values
-    for match in matches:
-        match_index = sample_id_list.index(match)  # Gets row number of duplicates
-        del scraped_list[match_index]
-        del sample_id_list[match_index]
-    # print(str(len(matches)) + " duplicates removed | " + str(len(scraped_list)) + " unique data points")
-
+def list_comparison(checklist, scraped_list, logger):
+    scraped_l_copy = scraped_list.copy()
+    for i, row in enumerate(scraped_l_copy):
+        scraped_l_copy[i] = str(row)
+    index = 0
+    num_matches = 0
+    while len(scraped_l_copy) > 0 and index < len(checklist):
+        if checklist[index] in scraped_l_copy:
+            num_matches += 1
+            match_index = scraped_l_copy.index(checklist[index])  # Gets row number of duplicates
+            del scraped_list[match_index]
+            del scraped_l_copy[match_index]
+        index += 1
+    logger.info(str(num_matches) + " duplicates removed | " + str(len(scraped_list)) + " unique data points")
     return scraped_list
 
 
@@ -99,12 +85,13 @@ def check_dirs():
     dir_ls = [
         constants.DATA_DIR,
         constants.LOG_DIR,
+        constants.DATE_DIR,
         constants.COPPER_LEAD_LOG_DIR,
         constants.CHEM_LOG_DIR,
         constants.COLI_LOG_DIR,
         constants.COPPER_LEAD_DATA_DIR,
         constants.CHEM_DATA_DIR,
-        constants.COLI_DATA_DIR,
+        constants.COLI_DATA_DIR
     ]
     for dir in dir_ls:
         if not os.path.exists(dir):

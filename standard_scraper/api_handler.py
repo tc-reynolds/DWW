@@ -19,25 +19,36 @@ non_jsp_states = {
     'Pennsylvania': 'http://www.drinkingwater.state.pa.us/dwrs/HTM/SelectionCriteria.html',
     'Washington': 'https://fortress.wa.gov/doh/eh/portal/odw/si/FindWaterQuality.aspx',
     'Michigan': 'https://mitracking.state.mi.us/',
-    'Ohio': 'http://dww.epa.ohio.gov/WaterSystemDetail.jsp?tinwsys_is_number=1164&tinwsys_st_code=OH&wsnumber=OH1700011',
     'Orgeon': 'https://yourwater.oregon.gov/search.htm',
     'Utah': 'https://deq.utah.gov/water-system-search-form'
 }
 no_data = [
     'Alabama',
     'District of Columbia',
-    'South Dakota'
+    'South Dakota',
+    'Georgia'
 ]
 jsp_unique = {
     'Missouri': 'https://dnr.mo.gov/DWW/',
     'Virginia': 'https://odw.vdh.virginia.gov/DWW-VA/',
     'Rhode Island': 'https://dwq.health.ri.gov/DWW/',
     'Kansas': 'http://165.201.142.59:8080/DWW/SampleSearch.jsp',
-    'Maryland': 'https://mdesdwis.mde.state.md.us/DWW/',
     'Wyoming': 'https://sdwisr8.epa.gov/Region8DWWPUB/index.jsp',
     'Alaska': 'https://dec.alaska.gov/DWW/'
 }
 jsp_states = {
+    'Maryland': {
+        url: 'https://mdesdwis.mde.state.md.us/DWW/',
+        coli: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+              '&PointOfContactType=None&SampleType=ColiformSample&'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All'
+              '&SourceWaterType=All&PointOfContactType=None&SampleType=NonTCRAll'
+              '&begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+                     '&PointOfContactType=None&SampleType=LeadandCopperSummaries&'
+                     'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+    },
     'Texas': {
         url: 'https://dww2.tceq.texas.gov/DWW/',
         coli: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All&SourceWaterType=All'
@@ -215,25 +226,16 @@ jsp_states = {
                      'WaterSystemType=All&SourceWaterType=All&PointOfContactType=None&SampleType=LeadandCopperSummaries&'
                      'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
     },
-    # 'Arkansas': {
-    #     url: 'http://sdwis.deq.state.ok.us/DWW/',
-    #     coli: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
-    #           '&SourceWaterType=All&SampleType=ColiformSample&'
-    #           'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
-    #     chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
-    #           '&SourceWaterType=All&SampleType=NonTCRAll&'
-    #           'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
-    # },
-    'Georgia': {
-        url: 'http://dwwwebvm.dhec.sc.gov:8080/DWW/',
-        coli: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
-              '&SourceWaterType=All&SampleType=ColiformSample&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
-        chem: 'JSP/SearchDispatch?number=&name=&ActivityStatusCD=All&county=All&WaterSystemType=All'
-              '&SourceWaterType=All&SampleType=NonTCRAll&'
-              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
-        copper_lead: 'JSP/SearchDispatch?number=&name=&companyname=&WaterSystemStatusCode=A&county=All&'
-                     'WaterSystemType=All&SourceWaterType=All&PointOfContactType=None&SampleType=LeadandCopperSummaries&'
+    'Ohio': {
+        url: 'http://dww.epa.ohio.gov/',
+        coli: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+        '&PointOfContactType=None&SampleType=ColiformSample&'
+        'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All'
+        '&SourceWaterType=All&PointOfContactType=None&SampleType=NonTCRAll&'
+        'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+                     '&PointOfContactType=None&SampleType=LeadandCopperSummaries&'
                      'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
     },
     'Idaho': {
@@ -275,7 +277,7 @@ jsp_states = {
     'New Mexico': {
         url: 'https://dww.water.net.env.nm.gov/DWW/',
         coli: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
-              '&PointOfContactType=None&SampleType=ColiformSummaries&'
+              '&PointOfContactType=None&SampleType=ColiformSample&'
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
               '&PointOfContactType=None&SampleType=NonTCRAll&stateclassificationcode=All&'
@@ -287,7 +289,7 @@ jsp_states = {
     'South Carolina': {
         url: 'http://dwwwebvm.dhec.sc.gov:8080/DWW/',
         coli: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
-              '&PointOfContactType=None&SampleType=ColiformSummaries&'
+              '&PointOfContactType=None&SampleType=ColiformSample&'
               'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
               '&PointOfContactType=None&SampleType=NonTCRAll&stateclassificationcode=All&'
@@ -330,10 +332,8 @@ def crawl_new():
 def get_url(key):
     return jsp_states[key][url]
 
-
 def get_coli_call(key):
     return jsp_states[key][coli]
-
 
 def get_chem_call(key):
     return jsp_states[key][chem]
@@ -350,5 +350,6 @@ if __name__ == '__main__':
     known = known_states()
     print("Num States known: " + str(len(known)))
     print(known)
-    print("States not yet known: " )
+    unknown = diff(known, state_names)
+    print("States not yet known: " + str(len(unknown)))
     print(diff(known, state_names))

@@ -13,6 +13,11 @@ from threading import Thread, ThreadError
 import os
 import time
 
+#######################################
+# @Authors: Tim Reynolds, Wes Austin  #
+# @Github: github.com/tc-reynolds     #
+# @Email: timothyreynolds.cs@gmail.com#
+#######################################
 
 #Checks whether required directories exist
 #If not, create them.
@@ -39,6 +44,6 @@ def all_states(states):
 
 if __name__ == '__main__':
     single_state(states, 'Texas')
-    # list_of_states(['Texas', 'Illinois'])
+    # list_of_states(['Arizona', 'Texas', 'Illinois'])
     # all_states(states)
 
