@@ -43,14 +43,13 @@ class ThreadService:
     def start_threading(self, states):
         #Handles multiple states running at a time
         my_threads = {}
-        threshold = 10
         for state in states:
             url = api_handler.get_url(state)
             try:
                 scraper_thread = Thread(name=state, target=self.scrape_service.scrape_state, args=(state, states[state], url,))
                 scraper_thread.start()
                 my_threads[state] = scraper_thread
-                my_threads = self.throttle_threads(my_threads, threshold)
+                my_threads = self.throttle_threads(my_threads, config.THREADING_THRESHOLD)
             except ThreadError as te:
                 self.master_logger.error(te.with_traceback())
         self.master_logger.info("All states threaded...")

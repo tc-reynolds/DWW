@@ -48,7 +48,7 @@ class ScraperFactory:
         pass
 
     @staticmethod
-    def chem_scraper(state, url, date_ranges, filetype):
+    def chem_scraper(state, url, filetype):
         save_location = constants.CHEM_SAVE_LOCATION + state + filetype
         log_location = constants.CHEM_LOG_LOCATION + state + '.log'
         log_name = state + '_copper_lead'
