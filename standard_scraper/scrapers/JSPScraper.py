@@ -3,7 +3,7 @@ from utils import clean_data_unit, ascii_encoding,\
     clean_html, remove_duplicates_two_ids, \
     remove_duplicates_one_id, clean_data_unit_no_spaces
 import constants
-import scrapers.HTML_Scraper
+from scrapers.HTML_Scraper import HTML_Scraper
 import time
 from bs4 import BeautifulSoup
 
@@ -23,7 +23,7 @@ class WebScraper:
         self.date_ranges = date_ranges
         self.api_endpoint = api_endpoint
         self.id_list = self.read_historical()
-        self.html_scraper = HTML_Scraper()
+        self.html_scraper = HTML_Scraper(self.logger)
         # self.id_list = []
 
     def get_rows(self, html):
@@ -38,7 +38,6 @@ class WebScraper:
         except:
             self.logger.error("ERROR: No data found, no rows to parse")
         return rows
-
 
     def clean_headers(self, headers, expected_headers):
         # Provide header list
@@ -173,6 +172,7 @@ class WebScraper:
             html = self.html_scraper.get_html_requests(url, first_try=True)
             if html is False:
                 continue
+    
             href_rows = self.get_rows(html)
             if len(href_rows) > 0:
                 lab_sample_index = self.expected_headers.index(constants.LAB_SAMPLE)

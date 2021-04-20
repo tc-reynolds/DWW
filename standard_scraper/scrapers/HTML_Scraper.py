@@ -18,8 +18,8 @@ from http.client import IncompleteRead
 import csv
 
 class HTML_Scraper:
-    def __init__(self):
-        pass
+    def __init__(self, logger):
+        self.logger = logger
     def get_html_requests(self, url, first_try):
         self.logger.info("URL: " + url)
         try:
@@ -83,3 +83,7 @@ class HTML_Scraper:
             self.logger.error(error)
             self.logger.error("No connection can be made.... Exiting...")
             exit()
+
+    def pandas_table_read(self, url, table_id):
+        df = pd.read_html(url, attrs={'id' : table_id})
+        return df
