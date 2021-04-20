@@ -30,9 +30,9 @@ class ScrapeService:
 
 
     def scrape_state(self, state, state_dict, url):
-        if state_dict[api_handler.coli] is not None:
-            self.scrape_coli(state, url)
-        if state_dict[api_handler.chem] is not None:
-            self.scrape_chem(state, url)
+        # if state_dict[api_handler.coli] is not None:
+        #     self.scrape_coli(state, url)
+        # if state_dict[api_handler.chem] is not None:
+        #     self.scrape_chem(state, url)
         if state_dict[api_handler.copper_lead] is not None:
             self.scrape_copper_lead(state, url)
