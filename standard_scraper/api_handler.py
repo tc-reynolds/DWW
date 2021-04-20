@@ -37,6 +37,21 @@ jsp_unique = {
     'Alaska': 'https://dec.alaska.gov/DWW/'
 }
 jsp_states = {
+    'Alaska': {
+        url: 'https://dec.alaska.gov/DWW/',
+        coli: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+              '&PointOfContactType=None&SampleType=ColiformSample&'
+              'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        chem: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All'
+              '&SourceWaterType=All&PointOfContactType=None&SampleType=NonTCRAll'
+              '&begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        copper_lead: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
+                     '&PointOfContactType=None&SampleType=LeadandCopperSummaries&'
+                     'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        table_id: 'sample',
+        row_tag: 'tr',
+        col_tag: 'td'
+    },
     'Maryland': {
         url: 'https://mdesdwis.mde.state.md.us/DWW/',
         coli: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
@@ -47,7 +62,10 @@ jsp_states = {
               '&begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
         copper_lead: 'JSP/SearchDispatch?number=&name=&county=All&WaterSystemType=All&SourceWaterType=All'
                      '&PointOfContactType=None&SampleType=LeadandCopperSummaries&'
-                     'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples'
+                     'begin_date=STARTING_DATE&end_date=ENDING_DATE&action1=Search+For+Samples',
+        table_id: '#AutoNumber8',
+        row_tag: 'th',
+        col_tag: 'td'
     },
     'Texas': {
         url: 'https://dww2.tceq.texas.gov/DWW/',

@@ -54,6 +54,11 @@ class HTML_Scraper:
         # driver.close()
         return html
 
+    def pandas_table_read(self, url, table_id):
+        self.logger.info("Pandas are awesome :)")
+        df = pd.read_html(url, attrs={'id' : table_id})
+        return df
+
     def handle_connection_error(self, url, first_try, error):
         self.logger.info("Handling exception for connection...")
         self.logger.info(f"First Try: {first_try!s}")
@@ -68,6 +73,3 @@ class HTML_Scraper:
             self.logger.error("No connection can be made.... Exiting...")
             exit()
 
-    def pandas_table_read(self, url, table_id):
-        df = pd.read_html(url, attrs={'id' : table_id})
-        return df

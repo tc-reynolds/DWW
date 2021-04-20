@@ -33,56 +33,7 @@ class WebScraper:
         self.logger.info("LATEST DATE SCRAPED: %s", self.last_date_scraped)
         file1.close()
 
-    def get_rows(self, html):
-        rows = []
-        try:
-            self.logger.info("Reading rows...")
-            soup = BeautifulSoup(html, 'html.parser')
-            table = soup.select_one('#AutoNumber8')
-            self.logger.info("Table found.")
-            rows = table.findAll(lambda tag: tag.name == 'tr')
-            self.logger.info("Rows read.")
-        except:
-            self.logger.error("ERROR: No data found, no rows to parse")
-        return rows
 
-    def clean_headers(self, headers, expected_headers):
-        # Provide header list
-        parsed_headers = []
-        for ele in headers:
-            new_header = clean_data_unit_no_spaces(ele.text)
-            for expected_header in expected_headers:
-                if new_header in expected_header:
-                    parsed_headers.append(expected_header)
-                    break;
-        self.logger.info(parsed_headers)
-        return parsed_headers
-
-    def build_row(self, cols):
-        clean_row = []
-        href = ''
-        for i, ele in enumerate(cols):
-            data = clean_data_unit(ele.text)
-            if self.chem_scrape == 'CHEM':
-                if ele.a is not None:
-                    href = self.url + "JSP/" + ele.a['href']
-                    href = href.replace(' ', '')
-            if data or i < len(self.expected_headers) - 1:
-                if data == '':
-                    data = 'NULL'
-                clean_row.append(data)
-        if self.chem_scrape == 'CHEM':
-            clean_row.append(href)
-        return clean_row
-
-    def clean_analytes(self, rows):
-        self.logger.info("Cleaning data...")
-        analytes = []
-        for row in rows:
-            cols = row.find_all('td')
-            clean_row = self.build_row(cols)
-            analytes.append(clean_row)
-        return analytes
 
     def remove_duplicate_analytes(self, headers, analytes):
         #Remove all duplicates, build unique id for each row of data
