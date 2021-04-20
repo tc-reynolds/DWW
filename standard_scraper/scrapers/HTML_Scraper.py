@@ -1,6 +1,5 @@
 from utils import clean_data_unit, ascii_encoding,\
-    clean_html, remove_duplicates_two_ids, \
-    remove_duplicates_one_id, clean_data_unit_no_spaces
+    clean_html, clean_data_unit_no_spaces
 import time
 import subprocess
 import requests
@@ -45,21 +44,6 @@ class HTML_Scraper:
             else:
                 return self.handle_connection_error(url, first_try=False, error=e)
 
-
-    def get_html_curl(self, url):
-        # Scrapes HTML, here you put the selenium crawling:
-        self.logger.info("URL: " + url)
-        result = subprocess.run(['curl', '-s', url], stdout=subprocess.PIPE)
-        try:
-            raw_html = result.stdout.decode('utf-8')
-        except:
-            raw_html = result.stdout.decode('latin-1')
-            self.logger.warning('HTML encoded in latin-1...')
-        self.logger.info("Removing non-ascii characters...")
-        ascii_only_html = ascii_encoding(raw_html)
-        html = clean_html(ascii_only_html)
-        self.logger.info("HTML clean....")
-        return html
 
     def get_html_selenium(self, url):
         if driver.session_id is None:

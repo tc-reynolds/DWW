@@ -1,8 +1,6 @@
 import utils
 from utils import clean_data_unit, ascii_encoding,\
     clean_html, clean_data_unit_no_spaces
-    clean_html, remove_duplicates_two_ids, \
-    remove_duplicates_one_id, clean_data_unit_no_spaces
 import constants
 from scrapers.HTML_Scraper import HTML_Scraper
 import time
@@ -34,8 +32,6 @@ class WebScraper:
         file1.write(str(self.last_date_scraped))
         self.logger.info("LATEST DATE SCRAPED: %s", self.last_date_scraped)
         file1.close()
-        self.html_scraper = HTML_Scraper(self.logger)
-        # self.id_list = []
 
     def get_rows(self, html):
         rows = []
@@ -203,9 +199,6 @@ class WebScraper:
             self.save_last_scraped_date()
             time.sleep(1)
             url = utils.url_with_date(start, end, self.url, self.api_endpoint)
-            # Uncomment below code to switch from curl to selenium for web scraping
-            # html = get_html_selenium(url)
-            # html = self.get_html_curl(url)
             html = self.html_scraper.get_html_requests(url, first_try=True)
             if html is False:
                 continue
