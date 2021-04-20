@@ -57,6 +57,3 @@ CSV_COPPER_LEAD.insert(0, 'UID')
 
 #Useful for unique ID's
 LAB_SAMPLE = 'LabSampleNo.'
-ANALYTE_CODE = 'AnalyteCode'
-WATER_SYSTEMS_NO = 'WaterSystemNo.'
-ANALYTE = 'Analyte'

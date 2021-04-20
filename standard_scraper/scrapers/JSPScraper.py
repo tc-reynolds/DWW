@@ -32,16 +32,18 @@ class WebScraper:
         self.chem_scrape = chem_scrape
         self.logger = logger
         self.save_location = save_location
-        self.date_ranges = date_ranges
         self.api_endpoint = api_endpoint
         self.state = state
         self.id_list = self.read_historical()
         self.last_date_scraped = date_ranges[0]
-        atexit.register(self.exit_handler)
+        self.date_ranges = utils.date_range(self.last_date_scraped, date_ranges[1])
 
-    def exit_handler(self):
-        file1 = open(constants.DATE_DIR + self.state + '.txt', "w")  # write mode
+    def save_last_scraped_date(self):
+        state_filename = constants.DATE_STATE_FILENAME.replace("STATE_NAME", self.chem_scrape + "_" + self.state)
+        self.logger.info(state_filename)
+        file1 = open(state_filename, "w")  # write mode
         file1.write(str(self.last_date_scraped))
+        self.logger.info("LATEST DATE SCRAPED: %s", self.last_date_scraped)
         file1.close()
 
     def get_html_requests(self, url, first_try):
@@ -68,22 +70,6 @@ class WebScraper:
                 return self.handle_connection_error(url, first_try=True, error=e)
             else:
                 return self.handle_connection_error(url, first_try=False, error=e)
-
-
-    def get_html_curl(self, url):
-        # Scrapes HTML, here you put the selenium crawling:
-        self.logger.info("URL: " + url)
-        result = subprocess.run(['curl', '-s', url], stdout=subprocess.PIPE)
-        try:
-            raw_html = result.stdout.decode('utf-8')
-        except:
-            raw_html = result.stdout.decode('latin-1')
-            self.logger.warning('HTML encoded in latin-1...')
-        self.logger.info("Removing non-ascii characters...")
-        ascii_only_html = ascii_encoding(raw_html)
-        html = clean_html(ascii_only_html)
-        self.logger.info("HTML clean....")
-        return html
 
     def get_html_selenium(self, url):
         driver = utils.initialize_driver()
@@ -163,8 +149,11 @@ class WebScraper:
 
     def remove_duplicate_analytes(self, headers, analytes):
         #Remove all duplicates, build unique id for each row of data
+        is_empty = False
         analytes = utils.list_comparison(self.id_list, analytes, self.logger)
-        return analytes
+        if len(analytes) == 0:
+            is_empty = True
+        return analytes, is_empty
 
     def remove_markup(self, data_rows, expected_headers):
         #Removes HTML from rows and headers
@@ -255,8 +244,6 @@ class WebScraper:
             self.write_to_csv(constants.CHEM_HREF_HEADERS, total_href_analytes, save_location)
         return analytes
 
-    def write_last_checked(self, date):
-        pass
     def write_to_csv(self, headers, analytes, save_location):
         self.logger.info("Writing to %s", save_location)
         self.logger.info("Num unique samples: " + str(len(analytes)))
@@ -269,11 +256,12 @@ class WebScraper:
 
     def scrape(self):
         #Starts all scraping for object across date range
-        self.logger.info(self.date_ranges)
         for start, end in self.date_ranges:
-            url = utils.url_with_date(start, end, self.url, self.api_endpoint)
+            self.logger.info("Sleeping 1 seconds...")
             self.last_date_scraped = start
-            self.logger.info("LATEST DATE SCRAPED: %s", self.last_date_scraped)
+            self.save_last_scraped_date()
+            time.sleep(1)
+            url = utils.url_with_date(start, end, self.url, self.api_endpoint)
             # Uncomment below code to switch from curl to selenium for web scraping
             # html = get_html_selenium(url)
             # html = self.get_html_curl(url)
@@ -293,7 +281,6 @@ class WebScraper:
                         self.logger.info("Storing href links...")
                         analytes = self.store_href_table(headers, analytes)
                     self.write_to_csv(headers, analytes, self.save_location)
-            self.logger.info("Sleeping 1 seconds...")
-            time.sleep(1)
+
 
         self.logger.info("Scraping finished....")
