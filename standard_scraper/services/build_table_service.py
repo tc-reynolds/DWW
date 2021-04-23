@@ -1,4 +1,4 @@
-
+from utils import clean_data_unit, clean_data_unit_no_spaces
 
 class TableBuilderService:
 
@@ -16,14 +16,14 @@ class TableBuilderService:
             self.logger.info("Rows read.")
         except:
             self.logger.error("ERROR: No data found, no rows to parse")
-        headers, analytes = self.remove_markup(rows, col_tag expected_headers)
+        headers, analytes = self.remove_markup(rows, col_tag, expected_headers)
         return headers, analytes
 
-    def remove_markup(self, data_rows, col_tag, expected_headers):
+    def remove_markup(self, rows, col_tag, expected_headers):
         #Removes HTML from rows and headers
         headers = self.get_headers(col_tag, expected_headers)
         self.logger.info("Headers received.")
-        analytes = self.clean_analytes(data_rows)
+        analytes = self.get_analytes(rows)
         return headers, analytes
 
     def get_headers(self, col_tag, expected_headers):
@@ -31,7 +31,7 @@ class TableBuilderService:
         headers = header_row.find_all(col_tag)
         headers = self.clean_headers(headers, expected_headers)
         return headers
-
+    
     def clean_headers(self, headers, expected_headers):
         # Provide header list
         parsed_headers = []
@@ -44,7 +44,7 @@ class TableBuilderService:
         self.logger.info(parsed_headers)
         return parsed_headers
 
-    def clean_analytes(self, rows, col_tag):
+    def get_analytes(self, rows, col_tag):
         self.logger.info("Cleaning data...")
         analytes = []
         for row in rows:
@@ -52,7 +52,6 @@ class TableBuilderService:
             clean_row = self.build_row(cols)
             analytes.append(clean_row)
         return analytes
-
     def build_row(self, cols):
         clean_row = []
         href = ''
