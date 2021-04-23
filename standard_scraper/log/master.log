@@ -1,0 +1,15 @@
+2021-04-23 16:01:58 INFO     COLI SCRAPE Maryland
+2021-04-23 16:01:58 INFO     COLI SCRAPE Texas
+2021-04-23 16:01:58 INFO     COLI SCRAPE Delaware
+2021-04-23 16:01:58 INFO     COLI SCRAPE Iowa
+2021-04-23 16:01:58 INFO     COLI SCRAPE Illinois
+2021-04-23 16:01:58 INFO     COLI SCRAPE Kentucky
+2021-04-23 16:01:58 INFO     COLI SCRAPE Louisiana
+2021-04-23 16:01:58 INFO     COLI SCRAPE Mississippi
+2021-04-23 16:01:58 INFO     COLI SCRAPE North Carolina
+2021-04-23 16:01:58 INFO     COLI SCRAPE Vermont
+2021-04-23 16:02:02 INFO     COLI SCRAPE West Virginia
+2021-04-23 16:02:32 INFO     Thread for North Carolina has ended and been removed
+2021-04-23 16:02:32 INFO     _______Remaining Threads_________
+2021-04-23 16:02:32 INFO     dict_keys(['Maryland', 'Texas', 'Delaware', 'Iowa', 'Illinois', 'Kentucky', 'Louisiana', 'Mississippi', 'Vermont', 'West Virginia'])
+2021-04-23 16:02:32 INFO     ____________________________

@@ -229,6 +229,7 @@ class WebScraper:
             url = analytes[i].pop()
             html = self.get_html_requests(url, first_try=True)
             if html is False:
+                print("html is False, continuing...")
                 continue
             href_rows = self.get_rows(html)
             if len(href_rows) > 0:
@@ -267,15 +268,19 @@ class WebScraper:
             # html = self.get_html_curl(url)
             html = self.get_html_requests(url, first_try=True)
             if html is False:
+                self.logger.info("HTML is false.. continuing...")
                 continue
             data_rows = self.get_rows(html)
             if len(data_rows) > 0:
+                is_empty = False
                 headers, analytes = self.remove_markup(data_rows, self.expected_headers)
-                if len(self.id_list) > 0 and len(analytes) > 0:
+                if len(analytes) > 0:
                     self.logger.info("Total samples: " + str(len(analytes)))
-                    analytes, is_empty = self.remove_duplicate_analytes(headers, analytes)
+                    if len(self.id_list) > 0:
+                        analytes, is_empty = self.remove_duplicate_analytes(headers, analytes)
                     self.logger.info("Num unique samples: " + str(len(analytes)))
                     if is_empty:
+                        self.logger.info("No samples, continue...")
                         continue
                     if self.chem_scrape == 'CHEM':
                         self.logger.info("Storing href links...")
