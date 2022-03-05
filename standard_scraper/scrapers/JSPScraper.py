@@ -251,7 +251,7 @@ class WebScraper:
         if len(analytes) > 0:
             analyte_df = self.build_analyte_df(headers, analytes)
             if analyte_df.empty is False:
-                analyte_df.to_csv(save_location, mode='a', header=False)
+                analyte_df.to_csv(save_location, mode='a', header=False, index=False)
         else:
             self.logger.info("No unique data found...")
 
@@ -262,6 +262,7 @@ class WebScraper:
             self.last_date_scraped = start
             self.save_last_scraped_date()
             time.sleep(1)
+            starttime_per_date = time.perf_counter()
             url = utils.url_with_date(start, end, self.url, self.api_endpoint)
             # Uncomment below code to switch from curl to selenium for web scraping
             # html = get_html_selenium(url)
@@ -277,7 +278,10 @@ class WebScraper:
                 if len(analytes) > 0:
                     self.logger.info("Total samples: " + str(len(analytes)))
                     if len(self.id_list) > 0:
+                        start_duplicate_removal_timer = time.perf_counter()
                         analytes, is_empty = self.remove_duplicate_analytes(headers, analytes)
+                        end_duplicate_removal_timer = time.perf_counter()
+                        self.logger.info("Time taken to remove duplicates:" + str((end_duplicate_removal_timer - start_duplicate_removal_timer)))
                     self.logger.info("Num unique samples: " + str(len(analytes)))
                     if is_empty:
                         self.logger.info("No samples, continue...")
@@ -286,6 +290,9 @@ class WebScraper:
                         self.logger.info("Storing href links...")
                         analytes = self.store_href_table(headers, analytes)
                     self.write_to_csv(headers, analytes, self.save_location)
+            endtime_per_date = time.perf_counter()
+            self.logger.info("Time elapsed:" + str((endtime_per_date - starttime_per_date)))
+
 
 
         self.logger.info("Scraping finished....")

@@ -29,7 +29,7 @@ class ScrapeService:
         web_scraper.scrape()
 
 
-    def scrape_state(self, state, state_dict, url):
+    def scrape_state(self, state, state_dict, url, scraper_object=None):
         if state_dict[api_handler.coli] is not None:
             self.scrape_coli(state, url)
         if state_dict[api_handler.chem] is not None:

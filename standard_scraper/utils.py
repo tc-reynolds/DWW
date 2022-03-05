@@ -46,12 +46,11 @@ def list_comparison(checklist, scraped_list, logger):
         scraped_l_copy[i] = str(row)
     index = 0
     num_matches = 0
-    while len(scraped_l_copy) > 0 and index < len(checklist):
-        if checklist[index] in scraped_l_copy:
+    while len(scraped_l_copy) > 0 and index < len(scraped_l_copy):
+        if scraped_l_copy[index] in checklist:
             num_matches += 1
             match_index = scraped_l_copy.index(checklist[index])  # Gets row number of duplicates
             del scraped_list[match_index]
-            del scraped_l_copy[match_index]
         index += 1
     logger.info(str(num_matches) + " duplicates removed | " + str(len(scraped_list)) + " unique data points")
     return scraped_list

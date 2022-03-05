@@ -300,17 +300,17 @@ jsp_states = {
     }
 }
 crawled_states = [
-    'Arizona',
-    'Delaware',
-    'Iowa',
-    'Kentucky',
-    'Louisiana',
-    'Mississippi',
-    'North Carolina',
-    'Vermont',
-    'Florida',
-    'West Virginia',
-    'Illinois'
+    # 'Arizona',
+    # 'Delaware',
+    # 'Iowa',
+    # 'Kentucky',
+    # 'Louisiana',
+    # 'Mississippi',
+    # 'North Carolina',
+    # 'Vermont',
+    # 'Florida',
+    # 'West Virginia',
+    # 'Illinois'
 ]
 
 
